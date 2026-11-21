@@ -1,0 +1,807 @@
+<!doctype html>
+<html>
+<head>
+<meta name="robots" content="noindex, nofollow">
+<style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>My Finance</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<script>(function(){var l='he';try{var s=localStorage.getItem('mf-lang');if(s==='en'||s==='he')l=s;}catch(e){}document.documentElement.lang=l;document.documentElement.dir=l==='he'?'rtl':'ltr';})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=Inter:wght@400..600&family=Heebo:wght@400;500;600&display=swap">
+<style>
+/* Layout: same system as Gear Watchlist. A 1440u frame (1u = 1px at 1440). Fixed header (ticker + pill bar + language pill), hero total,
+   highlight canvas on a tile floor, holdings grid, business cards, year carousel, ring to-do block, dark footer. Single light theme.
+   Hebrew (default) runs right-to-left; Latin glyphs stay Inter, Hebrew glyphs fall back to Heebo. */
+:root {
+  color-scheme: light;
+  --hp-u: clamp(1px, .06944vw, 1.3333px); --u: var(--hp-u);
+  --ink: #1a1a19; --ink-soft: #33332f; --ink-hover: #000; --muted: #6c6962; --surface: #f8f8f8; --white: #fff;
+  --pill: #e6e3dc; --pill-hover: #d1cbbd; --panel: #e6e5e1; --rule: #cfccc6; --floor: #ebe9e4; --sel: #d9cdff;
+  --purple: #a68aff; --purple-hover: #7b54f5; --purple-ink: #47146e;
+  --blue: #76c1f5; --blue-hover: #2ba1f2; --blue-ink: #092538;
+  --orange: #ff5c00; --orange-hover: #e85400; --orange-ink: #500304; --yellow: #e6ba29; --note: #f6d561; --note-ink: #3a2b00;
+  --good: #4f7d1f; --bad: #b3261e;
+  --ticker-ink: #cac7bf; --foot: #1a1a19; --foot-muted: #6c6962; --foot-soft: #8b887f; --foot-pill: #282827;
+  --f-display: "Inter Tight", "Heebo", "Helvetica Neue", Arial, system-ui, sans-serif;
+  --f-sans: "Inter", "Heebo", "Helvetica Neue", Arial, system-ui, -apple-system, sans-serif;
+  --fast: .18s; --soft: cubic-bezier(.16,1,.3,1); --hop-ease: cubic-bezier(.33,0,.2,1); --back: cubic-bezier(.34,2.4,.64,1);
+  --hop-dur: .28s; --stagger: 12ms;
+  --frame: calc(1440 * var(--u)); --col: calc(994 * var(--u));
+}
+* { box-sizing: border-box; }
+body { background: var(--surface); color: var(--ink); font: 450 15px/1.5 var(--f-sans); letter-spacing: -.005em; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--ink); }
+::selection { background: var(--sel); color: var(--ink); }
+*:focus { outline: none; }
+:focus-visible { outline: 1px solid var(--ink); outline-offset: 4px; border-radius: 2px; }
+a { color: inherit; text-decoration: none; }
+button, input { font: inherit; color: inherit; }
+button { background: none; border: 0; padding: 0; cursor: pointer; }
+.hp-squircle { border-radius: var(--hp-radius, calc(16 * var(--u))); corner-shape: squircle; }
+.gut { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+/* Hebrew: looser tracking on display type, arrows mirrored */
+:root[lang="he"] :is(.headline, .title, .bigtitle, .wtitle, .ftitle, .quote, .note, .pname, .nextup .what, .ring-btn, .start, .todo label b, .sub, .lede) { letter-spacing: -.012em; }
+:root[dir="rtl"] :is(.cta svg.arrow, .read svg, .nav svg, .nextup .go) { transform: scaleX(-1); }
+
+/* hop pattern */
+.hop { transition: background var(--fast) var(--soft), color var(--fast) var(--soft), transform var(--fast) var(--soft); }
+.hop:hover, .hop:focus-visible { transform: translateY(calc(-4 * var(--u))); transition: background var(--fast) var(--soft), color var(--fast) var(--soft), transform var(--hop-dur) var(--back); }
+@keyframes hop { 0% { transform: translateY(var(--hp-hop)); } 55% { transform: translateY(calc(var(--hp-hop) * -.3)); } to { transform: translateY(0); } }
+@keyframes chip-float { 0%, to { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+
+/* ---------- header ---------- */
+.header { position: fixed; top: env(safe-area-inset-top, 0px); left: 0; right: 0; z-index: 20; font-family: var(--f-display); }
+.header::before { content: ""; position: absolute; inset: 0 0 calc(-30 * var(--u)) 0; z-index: -1; pointer-events: none; }
+:root[data-hp-scrolled] .header::before { backdrop-filter: blur(calc(18 * var(--u))); -webkit-backdrop-filter: blur(calc(18 * var(--u)));
+  mask-image: linear-gradient(to bottom, #000 0, #000 calc(80 * var(--u)), transparent calc(110 * var(--u))); -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 calc(80 * var(--u)), transparent calc(110 * var(--u))); }
+.ticker { height: calc(20 * var(--u)); background: var(--ink); color: var(--ticker-ink); overflow: hidden; direction: ltr; }
+.track { display: flex; width: max-content; animation: marquee 66s linear infinite; }
+.ticker:hover .track { animation-play-state: paused; }
+@keyframes marquee { to { transform: translate(-50%); } }
+.run { display: flex; align-items: center; list-style: none; margin: 0; padding: 0; }
+.run .item { font: 500 calc(11.3466 * var(--u)) / calc(20 * var(--u)) var(--f-sans); letter-spacing: -.01em; white-space: nowrap; unicode-bidi: isolate; }
+.run .item b { color: var(--surface); font-weight: 500; font-variant-numeric: tabular-nums; }
+.run .sep { display: inline-block; width: calc(4 * var(--u)); height: calc(4 * var(--u)); margin-inline: calc(9 * var(--u)) calc(8.5 * var(--u)); vertical-align: calc(1 * var(--u)); background: var(--ticker-ink); border-radius: 1px; }
+@media (prefers-reduced-motion: reduce) { .track { animation: none; } }
+.bar { height: calc(60 * var(--u)); display: flex; align-items: center; gap: calc(8 * var(--u)); padding-inline: max(calc(24 * var(--u)), env(safe-area-inset-left, 0px)) max(calc(24 * var(--u)), env(safe-area-inset-right, 0px)); max-width: calc(1440 * var(--u)); margin: 0 auto; }
+.brand { display: grid; place-items: center; width: calc(26 * var(--u)); height: calc(26 * var(--u)); margin-inline-end: calc(14 * var(--u)); }
+.brand svg { width: calc(24 * var(--u)); height: calc(24 * var(--u)); }
+.menus { display: flex; gap: calc(8 * var(--u)); list-style: none; margin: 0; padding: 0; }
+.group { position: relative; }
+.pill { display: inline-flex; align-items: center; white-space: nowrap; font-weight: 500; line-height: 1; transition: background var(--fast) var(--soft), color var(--fast) var(--soft), transform var(--fast) var(--soft); }
+.pill-group { height: calc(28 * var(--u)); min-width: calc(var(--hp-pill-w, 70) * var(--u)); justify-content: space-between; padding-inline: calc(8 * var(--u)) calc(6 * var(--u)); gap: calc(4 * var(--u)); background: var(--pill); color: var(--ink); font-size: calc(12 * var(--u)); letter-spacing: -.01em; --hp-radius: calc(16 * var(--u)); }
+.pill-group:hover { background: var(--pill-hover); }
+.pill-group[aria-expanded="true"], .pill-group[aria-expanded="true"]:hover { background: var(--ink); color: var(--pill); }
+.chev { display: grid; place-items: center; width: calc(16 * var(--u)); height: calc(16 * var(--u)); background: var(--ink); color: var(--pill); --hp-radius: calc(8 * var(--u)); }
+.chev svg { width: calc(8 * var(--u)); height: calc(8 * var(--u)); transition: transform var(--fast) var(--soft); }
+.pill-group[aria-expanded="true"] .chev { background: var(--pill); color: var(--ink); }
+.pill-group[aria-expanded="true"] .chev svg { transform: rotate(180deg); }
+.panel { position: absolute; top: calc(100% + 8 * var(--u)); inset-inline-start: 0; width: calc(440 * var(--u)); padding: calc(16 * var(--u)); --hp-radius: calc(24 * var(--u)); background: var(--pill); z-index: 1; visibility: hidden;
+  display: grid; grid-template-columns: 1fr 1fr; gap: calc(14 * var(--u)) calc(20 * var(--u)); }
+.panel[data-open] { visibility: visible; --hp-hop: calc(5 * var(--u)); animation: hop var(--hop-dur) var(--hop-ease) backwards; }
+.panel[data-open] .mitem { --hp-hop: calc(4 * var(--u)); animation: hop var(--hop-dur) var(--hop-ease) backwards; animation-delay: calc(var(--i, 5) * var(--stagger)); }
+.mitem { display: grid; grid-template-columns: calc(16 * var(--u)) 1fr; column-gap: calc(4 * var(--u)); color: var(--ink); text-align: start; transition: transform var(--fast) var(--soft); }
+.mitem:hover, .mitem:focus-visible { transform: translateY(calc(-4 * var(--u))); transition: transform var(--hop-dur) var(--back); }
+.mitem .ic { width: calc(16 * var(--u)); height: calc(16 * var(--u)); display: grid; place-items: center; }
+.mitem .ic i { width: calc(9 * var(--u)); height: calc(9 * var(--u)); border-radius: calc(3 * var(--u)); background: var(--c, var(--ink)); }
+.mitem .t { font: 500 calc(12 * var(--u)) / calc(16 * var(--u)) var(--f-display); letter-spacing: -.01em; white-space: nowrap; }
+.mitem .b { grid-column: 2; margin-top: calc(3 * var(--u)); font: 500 calc(10 * var(--u)) / calc(13 * var(--u)) var(--f-sans); color: var(--muted); transition: color var(--fast) var(--soft); }
+.mitem:hover .b, .mitem:focus-visible .b { color: var(--ink); }
+.actions { margin-inline-start: auto; display: flex; align-items: center; gap: calc(8 * var(--u)); }
+.pill-cta, .pill-dark { height: calc(26 * var(--u)); --hp-radius: calc(16 * var(--u)); font-size: calc(12 * var(--u)); letter-spacing: -.01em; }
+.pill-cta { min-width: calc(112 * var(--u)); padding: 0 calc(12 * var(--u)); justify-content: center; background: var(--purple); color: var(--purple-ink); }
+.pill-cta:hover, .pill-cta:focus-visible { background: var(--purple-hover); }
+.pill-dark { min-width: calc(75 * var(--u)); padding-inline: calc(11.25 * var(--u)) calc(13 * var(--u)); gap: calc(7.25 * var(--u)); background: var(--ink); color: var(--surface); }
+.pill-dark:hover, .pill-dark:focus-visible { background: var(--ink-hover); }
+.pill-dark svg { width: calc(10.5 * var(--u)); height: calc(13 * var(--u)); }
+/* language pill: two labelled options with a sliding dark thumb */
+.lang { position: relative; display: inline-grid; grid-template-columns: 1fr 1fr; height: calc(26 * var(--u)); padding: calc(2 * var(--u)); border-radius: 999px; background: var(--pill); direction: ltr; isolation: isolate; overflow: hidden; }
+.lang::before { content: ""; position: absolute; top: calc(2 * var(--u)); bottom: calc(2 * var(--u)); left: calc(2 * var(--u)); width: calc(50% - 2 * var(--u)); border-radius: 999px; background: var(--ink); z-index: -1; transition: transform var(--hop-dur) var(--back); }
+.lang[data-lang="en"]::before { transform: translateX(100%); }
+.lang button { min-width: calc(36 * var(--u)); padding: 0 calc(10 * var(--u)); border-radius: 999px; font: 500 calc(12 * var(--u)) / 1 var(--f-sans); color: var(--ink); transition: color var(--fast) var(--soft); }
+.lang button[aria-pressed="true"] { color: var(--surface); }
+.lang button:not([aria-pressed="true"]):hover { color: var(--purple-hover); }
+.lang button:focus-visible { outline: 2px solid var(--purple-hover); outline-offset: 1px; }
+.burger { display: none; width: 40px; height: 40px; place-items: center; }
+.burger i { display: block; width: 18px; height: 2px; background: var(--ink); border-radius: 1px; transition: transform var(--fast) var(--soft), opacity var(--fast) var(--soft); }
+.burger span { display: grid; gap: 3.25px; }
+html[data-hp-menu-open] .burger i:nth-child(1) { transform: translateY(5.25px) rotate(45deg) scaleX(1.42); }
+html[data-hp-menu-open] .burger i:nth-child(2) { opacity: 0; }
+html[data-hp-menu-open] .burger i:nth-child(3) { transform: translateY(-5.25px) rotate(-45deg) scaleX(1.42); }
+html[data-hp-menu-open] .burger i { background: var(--surface); }
+.mmenu { position: fixed; inset: 0; z-index: 19; background: var(--ink); color: var(--surface); padding: calc(env(safe-area-inset-top, 0px) + 96px) max(16px, env(safe-area-inset-right, 0px)) 32px max(16px, env(safe-area-inset-left, 0px)); overflow-y: auto; }
+.mmenu h4 { margin: 18px 0 6px; font: 500 12px var(--f-sans); letter-spacing: .14em; text-transform: uppercase; color: var(--foot-muted); }
+.mmenu a { display: block; width: 100%; padding: 10px 0; font: 500 26px/1.15 var(--f-display); letter-spacing: -.03em; border-bottom: 1px solid #2c2c2a; }
+
+/* ---------- hero ---------- */
+.hero { padding-top: calc(env(safe-area-inset-top, 0px) + 80 * var(--u) + 56 * var(--u)); text-align: center; display: flex; flex-direction: column; align-items: center; }
+.headline { margin: 0; font: 500 min(calc(105 * var(--u)), 8vw) / 1.05 var(--f-display); letter-spacing: -.04em; color: var(--ink); white-space: nowrap; }
+.sub { margin: calc(24 * var(--u)) 0 0; max-width: calc(640 * var(--u)); font: 400 calc(18 * var(--u)) / calc(26 * var(--u)) var(--f-sans); color: var(--muted); text-wrap: balance; }
+.total { margin-top: calc(30 * var(--u)); display: flex; flex-direction: column; align-items: center; gap: calc(12 * var(--u)); width: 100%; }
+.t-eyebrow { font: 500 calc(12 * var(--u)) / 1 var(--f-sans); letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
+:root[lang="he"] .t-eyebrow { letter-spacing: .04em; font-size: calc(13 * var(--u)); }
+.amt-btn { display: grid; justify-items: center; gap: calc(6 * var(--u)); padding: calc(8 * var(--u)) calc(18 * var(--u)); --hp-radius: calc(24 * var(--u)); background: transparent; transition: background var(--fast) var(--soft), transform var(--fast) var(--soft); }
+.amt-btn:hover, .amt-btn:focus-visible { background: var(--pill); transform: translateY(calc(-4 * var(--u))); transition: background var(--fast) var(--soft), transform var(--hop-dur) var(--back); }
+.amt { display: block; font: 500 calc(64 * var(--u)) / 1 var(--f-display); letter-spacing: -.045em; font-variant-numeric: tabular-nums; color: var(--ink); white-space: nowrap; direction: ltr; }
+.amt .approx { font-size: .45em; color: var(--muted); margin-right: .12em; vertical-align: .55em; letter-spacing: 0; }
+.alt { font: 500 calc(14 * var(--u)) / 1 var(--f-sans); color: var(--muted); font-variant-numeric: tabular-nums; }
+.tbar { display: flex; gap: calc(2 * var(--u)); width: min(calc(440 * var(--u)), 100%); height: calc(8 * var(--u)); margin-top: calc(4 * var(--u)); }
+.seg { min-width: calc(4 * var(--u)); border-radius: calc(3 * var(--u)); transform-origin: 50% 100%; transition: transform var(--fast) var(--soft); }
+.seg:hover { transform: scaleY(2); transition: transform var(--hop-dur) var(--back); }
+.legend { display: flex; flex-wrap: wrap; justify-content: center; gap: calc(4 * var(--u)) calc(14 * var(--u)); font: 500 calc(12 * var(--u)) / 1.4 var(--f-sans); color: var(--muted); max-width: calc(600 * var(--u)); }
+.legend span { white-space: nowrap; }
+.legend b { color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; }
+.legend i { display: inline-block; width: calc(7 * var(--u)); height: calc(7 * var(--u)); border-radius: calc(2 * var(--u)); margin-inline-end: calc(5 * var(--u)); vertical-align: calc(1 * var(--u)); }
+.tmeta { margin: 0; font: 400 calc(13 * var(--u)) / 1.5 var(--f-sans); color: var(--muted); max-width: calc(620 * var(--u)); text-wrap: balance; }
+.tmeta b { color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; }
+.ctas { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: calc(8 * var(--u)); margin-top: calc(28 * var(--u)); }
+.cta { display: inline-flex; align-items: center; height: calc(44 * var(--u)); padding-inline: calc(16 * var(--u)); gap: calc(10 * var(--u)); --hp-radius: calc(20 * var(--u)); font: 500 calc(16 * var(--u)) / 1 var(--f-sans); letter-spacing: -.01em; white-space: nowrap; }
+.cta svg.arrow { width: calc(10.064 * var(--u)); height: calc(10.064 * var(--u)); }
+.cta-request { background: #000; color: var(--surface); }
+.cta-request:hover, .cta-request:focus-visible { background: var(--ink); }
+.cta-demo { background: transparent; color: #0d0d0d; box-shadow: inset 0 0 0 calc(2 * var(--u)) #000; }
+.cta-demo:hover, .cta-demo:focus-visible { background: #000; color: var(--surface); }
+.band { position: relative; --edge: calc(120 * var(--u)); width: min(calc(1134 * var(--u)), calc(100vw - 48 * var(--u))); margin-top: calc(36 * var(--u)); direction: ltr; }
+.logos-vp { overflow: hidden; padding-block: calc(16 * var(--u)); mask-image: linear-gradient(to right, transparent, #000 var(--edge), #000 calc(100% - var(--edge)), transparent); -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--edge), #000 calc(100% - var(--edge)), transparent); }
+.logos { display: flex; width: max-content; height: calc(32 * var(--u)); animation: logos-loop 60s linear infinite; }
+@keyframes logos-loop { 0% { transform: translate(0); } to { transform: translate(-50%); } }
+@media (hover: hover) { .band:hover .logos { animation-play-state: paused; } }
+@media (prefers-reduced-motion: reduce) { .logos { animation: none; } }
+.logo { flex: none; margin-right: calc(36 * var(--u)); opacity: .4; transition: opacity .28s var(--soft); user-select: none; display: flex; align-items: center; height: 100%; }
+@media (hover: hover) { .logo:hover { opacity: 1; } }
+.logo .wm { font: 600 calc(22 * var(--u)) / 1 var(--f-display); letter-spacing: -.03em; color: var(--ink); white-space: nowrap; unicode-bidi: isolate; }
+
+/* ---------- canvas (highlights) ---------- */
+.canvas { position: relative; height: calc(660 * var(--u)); max-width: var(--frame); margin: calc(8 * var(--u)) auto 0; }
+.floor { position: absolute; inset: 0; width: 100%; height: 100%; overflow: hidden; mask-image: linear-gradient(to bottom, transparent, #000 18%); -webkit-mask-image: linear-gradient(to bottom, transparent, #000 18%); }
+.floor .tile { fill: var(--floor); transform-box: fill-box; transform-origin: center; transition: transform .22s cubic-bezier(.34,1.9,.5,1); }
+.floor .tile:hover { transform: scale(.9); }
+.ccard { position: absolute; left: calc(var(--x) / 1440 * 100%); top: calc(var(--y) * var(--u)); width: calc(var(--w) * var(--u)); transform: rotate(var(--r, 0deg)); transition: transform var(--hop-dur) var(--back); z-index: 1; }
+:root[dir="rtl"] .ccard { left: auto; right: calc(var(--x) / 1440 * 100%); transform: rotate(calc(var(--r, 0deg) * -1)); }
+.ccard:hover, :root[dir="rtl"] .ccard:hover { transform: rotate(0deg) translateY(calc(-6 * var(--u))) scale(1.03); z-index: 2; }
+.photo { display: block; background: var(--white); --hp-radius: calc(14 * var(--u)); padding: calc(10 * var(--u)); box-shadow: 0 0 0 1px #0000000d, 0 calc(13 * var(--u)) calc(20 * var(--u)) calc(-10 * var(--u)) #0000001a; }
+.photo .fig { display: grid; place-content: center; justify-items: center; gap: calc(6 * var(--u)); aspect-ratio: 4 / 3; max-width: 100%; background: var(--surface); border-radius: calc(8 * var(--u)); text-align: center; padding: calc(8 * var(--u)); }
+.photo .fig small { font: 500 calc(11 * var(--u)) / 1.3 var(--f-sans); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+:root[lang="he"] .photo .fig small { letter-spacing: .02em; font-size: calc(12 * var(--u)); }
+.photo .fig strong { font: 500 calc(40 * var(--u)) / 1 var(--f-display); letter-spacing: -.045em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.photo .fig strong s { text-decoration: none; font-size: .45em; color: var(--muted); letter-spacing: -.01em; }
+.ptag { display: block; margin-top: calc(8 * var(--u)); font: 500 calc(12 * var(--u)) / calc(16 * var(--u)) var(--f-display); letter-spacing: -.01em; text-align: start; }
+.ptag s { color: var(--muted); font-weight: 400; text-decoration: none; }
+.note { display: block; padding: calc(14 * var(--u)) calc(16 * var(--u)); --hp-radius: calc(6 * var(--u)); font: 500 calc(22 * var(--u)) / calc(26 * var(--u)) var(--f-display); letter-spacing: -.03em; text-align: start; box-shadow: 0 calc(13 * var(--u)) calc(20 * var(--u)) calc(-10 * var(--u)) #0000001a; }
+.note small { display: block; margin-top: calc(6 * var(--u)); font: 500 calc(11 * var(--u)) / 1.3 var(--f-sans); letter-spacing: 0; opacity: .7; }
+:root[lang="he"] .note small { font-size: calc(12 * var(--u)); }
+.note.yellow { background: var(--note); color: var(--note-ink); } .note.blue { background: var(--blue); color: var(--blue-ink); } .note.purple { background: var(--purple); color: var(--purple-ink); }
+.read { position: absolute; inset-inline-end: calc(40 * var(--u)); top: calc(4 * var(--u)); z-index: 4; display: inline-flex; align-items: center; gap: calc(8 * var(--u)); padding: calc(8 * var(--u)) calc(16 * var(--u)); --hp-radius: calc(16 * var(--u)); background: var(--orange); color: var(--orange-ink); font: 500 calc(16 * var(--u)) / calc(24 * var(--u)) var(--f-display); letter-spacing: -.02em; }
+.read:hover, .read:focus-visible { background: var(--orange-hover); }
+.read svg { width: calc(12 * var(--u)); height: calc(12 * var(--u)); }
+.cta-join { position: absolute; left: 50%; bottom: calc(40 * var(--u)); z-index: 4; transform: translateX(-50%); }
+.ring-btn { position: relative; display: grid; place-items: center; width: calc(396.98 * var(--u)); height: calc(72.45 * var(--u)); --hp-radius: calc(28.28 * var(--u)); background: var(--ink); color: var(--surface); font: 500 calc(42 * var(--u)) / 1 var(--f-display); letter-spacing: -.04em; --ring: 4.71; isolation: isolate; transition: background var(--hop-dur) var(--hop-ease); white-space: nowrap; }
+.ring-btn:hover, .ring-btn:focus-visible { background: #000; --ring: 9.42; }
+.ring { position: absolute; inset: calc(-12 * var(--u)); width: calc(100% + 24 * var(--u)); height: calc(100% + 24 * var(--u)); overflow: visible; pointer-events: none; z-index: -1; }
+.ring rect { x: calc(12 * var(--u)); y: calc(12 * var(--u)); width: calc(100% - 24 * var(--u)); height: calc(100% - 24 * var(--u)); rx: calc(28 * var(--u)); fill: none; stroke-width: calc(var(--ring) * 2 * var(--u)); transition: stroke-width var(--hop-dur) var(--back) 40ms; }
+.ring .g { stroke: #ef0202; } .ring .d { stroke: #ff6f31; stroke-dasharray: 13.28 12.22; }
+.ring-btn > span { position: relative; z-index: 1; }
+
+/* ---------- section heads ---------- */
+.feat { max-width: var(--col); margin: calc(160 * var(--u)) auto 0; }
+.fhead { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: calc(24 * var(--u)); }
+.title { margin: 0; display: grid; font: 500 calc(32 * var(--u)) / calc(40 * var(--u)) var(--f-display); letter-spacing: -.04em; text-wrap: balance; }
+.title .l2 { display: block; color: #8b887f; }
+.start { display: inline-flex; align-items: center; padding: calc(8 * var(--u)) calc(16 * var(--u)); border: calc(3 * var(--u)) solid var(--ink); --hp-radius: calc(16 * var(--u)); background: transparent; color: var(--ink); font: 500 calc(20 * var(--u)) / calc(24 * var(--u)) var(--f-display); letter-spacing: -.04em; white-space: nowrap; }
+.start:hover, .start:focus-visible { background: var(--ink); color: var(--surface); }
+
+/* ---------- holdings grid ---------- */
+.filters { display: flex; flex-wrap: wrap; gap: calc(8 * var(--u)); margin-bottom: calc(28 * var(--u)); }
+.mini { display: inline-flex; align-items: center; gap: calc(6 * var(--u)); height: calc(26 * var(--u)); padding: 0 calc(12 * var(--u)); --hp-radius: calc(16 * var(--u)); background: var(--pill); color: var(--ink); font: 500 calc(12 * var(--u)) / 1 var(--f-sans); white-space: nowrap; }
+button.mini:hover, button.mini:focus-visible { background: #fff; }
+.mini[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
+.mini i { width: calc(7 * var(--u)); height: calc(7 * var(--u)); border-radius: calc(2 * var(--u)); background: var(--c); }
+.grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: calc(40 * var(--u)) calc(24 * var(--u)); }
+.pcard { display: grid; gap: calc(10 * var(--u)); align-content: start; min-width: 0; }
+.pcard.hopin { --hp-hop: calc(12 * var(--u)); animation: hop .5s var(--hop-ease) backwards; animation-delay: calc(var(--i) * 30ms); }
+.well { position: relative; display: grid; place-items: center; aspect-ratio: 4 / 3; max-width: 100%; background: var(--white); --hp-radius: calc(20 * var(--u)); box-shadow: 0 0 0 1px #0000000a; transition: transform .5s var(--soft), box-shadow .3s var(--soft); }
+.pcard:hover .well { box-shadow: 0 0 0 1px #0000000a, 0 13px 20px -10px #0000001a, 0 30px 40px -24px #00000024; transform: translateY(calc(-4 * var(--u))); }
+.donut { width: 52%; height: auto; overflow: visible; direction: ltr; transition: transform .6s var(--soft); }
+.pcard:hover .donut { transform: scale(1.045); }
+.donut .trk { fill: none; stroke: var(--floor); }
+.donut .arc { fill: none; stroke: var(--c); stroke-linecap: round; }
+.donut text { fill: var(--ink); font: 500 15px var(--f-display); letter-spacing: -.03em; }
+.donut text.s { fill: var(--muted); font: 500 6px var(--f-sans); letter-spacing: .14em; }
+:root[lang="he"] .donut text.s { font-size: 6.5px; letter-spacing: 0; }
+.tag { position: absolute; inset-inline-start: calc(12 * var(--u)); top: calc(12 * var(--u)); display: inline-flex; align-items: center; height: calc(26 * var(--u)); padding: 0 calc(10 * var(--u)); border-radius: calc(13 * var(--u)); border-start-start-radius: calc(4 * var(--u)); font: 500 calc(12.5 * var(--u)) / 1 var(--f-sans); letter-spacing: -.01em; white-space: nowrap; }
+.tag.float { animation: chip-float 1.8s ease-in-out infinite; }
+.t-in { background: var(--blue); color: var(--blue-ink); } .t-out { background: var(--ink); color: var(--surface); } .t-sale { background: var(--purple); color: var(--purple-ink); }
+.t-target { background: var(--note); color: var(--note-ink); } .t-wait { background: var(--pill); color: var(--ink); } .t-done { background: var(--panel); color: var(--muted); }
+.off { position: absolute; inset-inline-end: calc(12 * var(--u)); top: calc(12 * var(--u)); height: calc(26 * var(--u)); padding: 0 calc(9 * var(--u)); display: inline-flex; align-items: center; border-radius: calc(13 * var(--u)); border-start-end-radius: calc(4 * var(--u)); background: var(--orange); color: #fff; font: 600 calc(12.5 * var(--u)) / 1 var(--f-sans); }
+.basis { position: absolute; inset-inline-start: calc(12 * var(--u)); bottom: calc(12 * var(--u)); font: 500 calc(11 * var(--u)) / 1 var(--f-sans); color: var(--muted); }
+.pmeta { display: grid; gap: calc(2 * var(--u)); min-width: 0; }
+.pstore { font: 500 calc(11 * var(--u)) / 1.4 var(--f-sans); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+:root[lang="he"] .pstore { letter-spacing: .03em; font-size: calc(12 * var(--u)); }
+.pname { margin: 0; font: 500 calc(17 * var(--u)) / 1.25 var(--f-display); letter-spacing: -.02em; }
+.pvar { margin: 0; color: var(--muted); font-size: calc(14 * var(--u)); }
+.prices { display: flex; align-items: baseline; flex-wrap: wrap; gap: calc(4 * var(--u)) calc(10 * var(--u)); }
+.price { font: 500 calc(30 * var(--u)) / 1 var(--f-display); letter-spacing: -.04em; font-variant-numeric: tabular-nums; unicode-bidi: isolate; }
+.was { color: var(--muted); font-size: calc(14 * var(--u)); font-variant-numeric: tabular-nums; unicode-bidi: isolate; }
+.pnote { margin: 0; color: var(--muted); font-size: calc(13 * var(--u)); overflow-wrap: anywhere; }
+.pfoot { display: flex; align-items: center; justify-content: space-between; gap: calc(10 * var(--u)); flex-wrap: wrap; padding-top: calc(10 * var(--u)); border-top: 1px solid var(--rule); color: var(--muted); font-size: calc(12 * var(--u)); }
+.pfoot .up { color: var(--good); font-weight: 500; }
+.pfoot .up span { color: var(--muted); font-weight: 400; }
+.stack { display: flex; gap: 1px; width: calc(120 * var(--u)); height: calc(6 * var(--u)); border-radius: calc(3 * var(--u)); overflow: hidden; direction: ltr; }
+.stack i { display: block; height: 100%; }
+.empty { grid-column: 1 / -1; padding: calc(40 * var(--u)); --hp-radius: calc(20 * var(--u)); background: var(--pill); color: var(--muted); text-align: center; }
+
+/* ---------- business ---------- */
+.biz { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: calc(24 * var(--u)); }
+.bcard { position: relative; display: grid; gap: calc(10 * var(--u)); align-content: start; min-width: 0; padding: calc(52 * var(--u)) calc(20 * var(--u)) calc(20 * var(--u)); background: var(--white); --hp-radius: calc(20 * var(--u)); box-shadow: 0 0 0 1px #0000000a; }
+.bcard .price { font-size: calc(40 * var(--u)); }
+.bcard .price .approx { color: var(--muted); font-size: .5em; vertical-align: .5em; }
+.calc { display: grid; gap: calc(4 * var(--u)); margin: calc(4 * var(--u)) 0 0; padding: calc(10 * var(--u)) 0 0; border-top: 1px solid var(--rule); font-size: calc(13 * var(--u)); color: var(--muted); }
+.calc div { display: flex; justify-content: space-between; gap: 12px; }
+.calc dd { margin: 0; color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; white-space: nowrap; unicode-bidi: isolate; }
+.calc dt { min-width: 0; }
+.calc .tot dd, .calc .tot dt { color: var(--ink); font-weight: 600; }
+.meter { position: relative; height: calc(10 * var(--u)); background: var(--floor); border-radius: calc(5 * var(--u)); overflow: hidden; margin-top: calc(6 * var(--u)); }
+.meter i { position: absolute; inset-block: 0; inset-inline-start: 0; border-radius: inherit; }
+
+/* ---------- years (carousel) ---------- */
+.tst { max-width: var(--col); margin: calc(180 * var(--u)) auto 0; position: relative; }
+.bigtitle { margin: 0 0 calc(48 * var(--u)); font: 500 calc(72 * var(--u)) / calc(80 * var(--u)) var(--f-display); letter-spacing: -.04em; }
+.tbody { display: grid; grid-template-columns: minmax(0, 1fr) calc(240 * var(--u)); gap: calc(48 * var(--u)); align-items: start; min-height: calc(220 * var(--u)); }
+.tblk[data-phase="out"] { transform: translateX(calc(var(--dir) * 26 * var(--u))); transition: transform .22s cubic-bezier(.7,0,.84,0); }
+.tblk[data-phase="pre"] { transform: translateX(calc(var(--dir) * -26 * var(--u))); transition: none; }
+.tblk[data-phase="in"] { transform: none; transition: transform .48s var(--back); }
+.by { display: flex; align-items: center; gap: calc(10 * var(--u)); margin-bottom: calc(18 * var(--u)); font: 500 calc(14 * var(--u)) / 1 var(--f-sans); color: var(--muted); }
+.by b { display: inline-flex; align-items: center; height: calc(26 * var(--u)); padding: 0 calc(10 * var(--u)); border-radius: calc(13 * var(--u)); border-start-start-radius: calc(4 * var(--u)); background: var(--ink); color: var(--surface); font-weight: 500; }
+.quote { margin: 0; font: 500 calc(32 * var(--u)) / calc(40 * var(--u)) var(--f-display); letter-spacing: -.03em; color: var(--ink); }
+.stats b { display: block; font: 500 calc(104 * var(--u)) / .9 var(--f-display); letter-spacing: -.05em; font-variant-numeric: tabular-nums; white-space: nowrap; unicode-bidi: isolate; }
+.stats span { display: block; margin-top: calc(10 * var(--u)); color: var(--muted); font-size: calc(17 * var(--u)); }
+.tnav { display: flex; align-items: center; gap: calc(12 * var(--u)); margin-top: calc(40 * var(--u)); }
+.nav { display: grid; place-items: center; width: calc(29.86 * var(--u)); height: calc(42.25 * var(--u)); --hp-radius: calc(14.93 * var(--u)); background: var(--pill); color: var(--ink); transition: background var(--hop-dur) var(--hop-ease); }
+.nav:hover, .nav:focus-visible { background: var(--pill-hover); }
+.nav svg { width: calc(9 * var(--u)); height: calc(14 * var(--u)); }
+.count { font: 500 calc(14 * var(--u)) / 1 var(--f-sans); color: var(--muted); font-variant-numeric: tabular-nums; unicode-bidi: isolate; }
+.ask { margin-inline-start: auto; display: inline-grid; padding: 4px 12px; font: 500 16px/28px var(--f-sans); --hp-radius: 20px; background: #d1cfc9; color: var(--muted); transition: background 150ms ease, color 150ms ease; overflow: hidden; }
+.ask > span { grid-area: 1 / 1; transition: opacity 160ms ease, transform 240ms cubic-bezier(.2,.7,.2,1); }
+.ask .b2 { opacity: 0; transform: translateY(70%); }
+.ask:hover, .ask:focus-visible { background: var(--ink); color: #f3f3f3; }
+.ask:hover .b1, .ask:focus-visible .b1 { opacity: 0; transform: translateY(-70%); }
+.ask:hover .b2, .ask:focus-visible .b2 { opacity: 1; transform: none; }
+
+/* ---------- to-do ---------- */
+.wait { max-width: var(--col); margin: calc(200 * var(--u)) auto 0; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.wtitle { margin: 0; font: 500 calc(72 * var(--u)) / calc(80 * var(--u)) var(--f-display); letter-spacing: -.04em; }
+.lede { margin: calc(20 * var(--u)) 0 0; max-width: calc(560 * var(--u)); font: 400 calc(18 * var(--u)) / calc(26 * var(--u)) var(--f-sans); color: var(--muted); text-wrap: balance; }
+.nextup { position: relative; margin-top: calc(48 * var(--u)); width: min(calc(720 * var(--u)), 100%); min-height: calc(123 * var(--u)); padding: calc(20 * var(--u)) calc(36 * var(--u)); --hp-radius: calc(48 * var(--u)); background: var(--ink); color: var(--surface); --ring: 8; isolation: isolate;
+  display: flex; align-items: center; gap: calc(20 * var(--u)); text-align: start; transition: background var(--hop-dur) var(--hop-ease); }
+.nextup:hover { background: #000; --ring: 16; }
+.nextup .ring rect { rx: calc(48 * var(--u)); }
+.nextup .pre { flex: none; font: 500 calc(24 * var(--u)) / 1 var(--f-display); color: #8b887f; letter-spacing: -.02em; white-space: nowrap; }
+.nextup .what { flex: 1 1 auto; min-width: 0; font: 500 calc(40 * var(--u)) / 1.1 var(--f-display); letter-spacing: -.04em; padding-bottom: calc(8 * var(--u)); border-bottom: calc(2 * var(--u)) solid #3a3a38; }
+.wsteps { margin-top: calc(24 * var(--u)); display: flex; gap: calc(8 * var(--u)); align-items: center; font: 500 calc(14 * var(--u)) / 1 var(--f-sans); color: var(--muted); flex-wrap: wrap; justify-content: center; }
+.wsteps b { color: var(--ink); font-weight: 500; }
+.todo { list-style: none; margin: calc(48 * var(--u)) 0 0; padding: 0; width: 100%; display: grid; gap: calc(8 * var(--u)); text-align: start; }
+.todo li { display: grid; grid-template-columns: calc(28 * var(--u)) calc(110 * var(--u)) minmax(0, 1fr); gap: calc(16 * var(--u)); align-items: start; padding: calc(16 * var(--u)) calc(20 * var(--u)); background: var(--white); --hp-radius: calc(20 * var(--u)); box-shadow: 0 0 0 1px #0000000a; transition: transform var(--fast) var(--soft), opacity var(--fast); }
+.todo li:hover { transform: translateY(calc(-3 * var(--u))); transition: transform var(--hop-dur) var(--back); }
+.todo input { appearance: none; -webkit-appearance: none; width: calc(22 * var(--u)); height: calc(22 * var(--u)); margin: calc(2 * var(--u)) 0 0; border-radius: calc(7 * var(--u)); background: var(--pill); display: grid; place-items: center; cursor: pointer; }
+.todo input:checked { background: var(--ink); }
+.todo input:checked::after { content: ""; width: 40%; height: 22%; border: 0 solid var(--surface); border-width: 0 0 2px 2px; transform: translateY(-15%) rotate(-45deg); }
+.todo input:focus-visible { outline: 2px solid var(--purple-hover); outline-offset: 2px; }
+.todo .when.tag { position: static; justify-self: start; }
+.todo label { cursor: pointer; min-width: 0; }
+.todo label b { display: block; font: 500 calc(18 * var(--u)) / 1.3 var(--f-display); letter-spacing: -.02em; }
+.todo label span { display: block; margin-top: calc(3 * var(--u)); color: var(--muted); font-size: calc(14 * var(--u)); }
+.todo li.done { opacity: .5; }
+.todo li.done label b { text-decoration: line-through; text-decoration-thickness: 1.5px; }
+.wmsg { margin-top: calc(14 * var(--u)); font-size: calc(13 * var(--u)); color: var(--muted); min-height: 1.4em; }
+
+/* ---------- footer ---------- */
+.footer { margin-top: calc(200 * var(--u)); background: var(--foot); color: var(--surface); position: relative; overflow: hidden; padding-top: calc(110 * var(--u)); padding-bottom: calc(40 * var(--u)); }
+.fstack { display: flex; justify-content: center; height: calc(150 * var(--u)); direction: ltr; }
+.fstack .photo { width: calc(150 * var(--u)); margin-inline: calc(-14 * var(--u)); transform: rotate(var(--r)) translateY(var(--y, 0)); transition: transform var(--hop-dur) var(--back); }
+.fstack .photo:hover { transform: rotate(0) translateY(calc(-12 * var(--u))); z-index: 1; }
+.fstack .fig { aspect-ratio: 1; color: var(--ink); }
+.fstack .fig strong { font-size: calc(26 * var(--u)); }
+.ftitle { margin: calc(48 * var(--u)) auto 0; text-align: center; font: 500 calc(65 * var(--u)) / calc(71 * var(--u)) var(--f-display); letter-spacing: -.04em; color: var(--surface); }
+.fpills { display: flex; justify-content: center; gap: calc(8 * var(--u)); margin-top: calc(28 * var(--u)); }
+.pill-light { height: calc(26 * var(--u)); padding: 0 calc(12 * var(--u)); --hp-radius: calc(16 * var(--u)); background: var(--pill); color: var(--ink); font: 500 calc(12 * var(--u)) / 1 var(--f-sans); }
+.pill-light:hover, .pill-light:focus-visible { background: #fff; }
+.footer .pill-dark { background: var(--foot-pill); } .footer .pill-dark:hover, .footer .pill-dark:focus-visible { background: #3a3a38; }
+.fcols { max-width: var(--col); margin: calc(80 * var(--u)) auto 0; display: flex; gap: calc(80 * var(--u)); flex-wrap: wrap; }
+.fcols > div { min-width: 0; }
+.fcols h5 { margin: 0 0 calc(12 * var(--u)); font: 500 calc(12 * var(--u)) / 1 var(--f-sans); color: var(--foot-soft); }
+.fcols a, .fcols p { display: block; width: max-content; max-width: 100%; margin: calc(6 * var(--u)) 0; font: 500 calc(15 * var(--u)) / 1.3 var(--f-sans); color: var(--foot-muted); transition: color var(--hop-dur) var(--hop-ease), transform var(--fast) var(--soft); }
+.fcols a:hover, .fcols a:focus-visible { color: #fff; transform: translateY(calc(-4 * var(--u))); transition: color var(--hop-dur) var(--hop-ease), transform var(--hop-dur) var(--back); }
+.legal { max-width: var(--col); margin: calc(64 * var(--u)) auto 0; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font: 400 calc(12 * var(--u)) / 1.5 var(--f-sans); color: var(--foot-soft); }
+.legal span { max-width: calc(480 * var(--u)); }
+
+/* ---------- keep a 16px gutter at every width ---------- */
+.feat, .tst, .wait, .fcols, .legal { max-width: min(var(--col), calc(100% - 32px)); }
+
+/* ---------- mid screens: highlights become a grid ---------- */
+@media (max-width: 1180px) {
+  .canvas { height: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; align-items: start; padding: 64px max(16px, env(safe-area-inset-right, 0px)) 130px max(16px, env(safe-area-inset-left, 0px)); }
+  .ccard, :root[dir="rtl"] .ccard { position: static; width: auto; }
+  .ccard { transform: rotate(calc(var(--r, 0deg) * .5)); }
+  :root[dir="rtl"] .ccard { transform: rotate(calc(var(--r, 0deg) * -.5)); }
+}
+
+/* ---------- small screens ---------- */
+@media (max-width: 860px) {
+  .menus, .pill-dark.hd { display: none; }
+  .burger { display: grid; }
+  .bar { height: 56px; padding-inline: max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px)); }
+  .pill-cta { height: 30px; font-size: 13px; padding: 0 12px; min-width: 0; }
+  .lang { height: 30px; padding: 2px; } .lang::before { top: 2px; bottom: 2px; left: 2px; width: calc(50% - 2px); } .lang button { min-width: 38px; padding: 0 10px; font-size: 13px; }
+  .ticker { height: 22px; } .run .item { font-size: 11.5px; line-height: 22px; }
+  .hero { padding-top: calc(env(safe-area-inset-top, 0px) + 120px); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .headline { font-size: 15vw; white-space: normal; }
+  .sub { font-size: 16px; line-height: 23px; max-width: 100%; }
+  .amt { font-size: 52px; } .t-eyebrow, .legend { font-size: 12px; } .alt { font-size: 14px; } .tmeta { font-size: 13px; padding-inline: 8px; } .tbar { height: 8px; } .legend i { width: 7px; height: 7px; }
+  .cta { height: 44px; font-size: 16px; padding-inline: 16px; }
+  .band { width: 100%; --edge: 48px; } .logo { margin-right: 28px; } .logo .wm { font-size: 20px; } .logos { height: 30px; }
+  .canvas { height: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 56px max(16px, env(safe-area-inset-right, 0px)) 120px max(16px, env(safe-area-inset-left, 0px)); margin-top: 24px; }
+  .ccard, :root[dir="rtl"] .ccard { position: static; width: auto; }
+  .photo .fig strong { font-size: 28px; } .photo .fig small, .ptag { font-size: 11px; } .note { font-size: 18px; line-height: 22px; } .note small { font-size: 11px; }
+  .read { inset-inline-end: max(16px, env(safe-area-inset-right, 0px)); top: 8px; font-size: 14px; padding: 6px 12px; }
+  .cta-join { bottom: 32px; } .ring-btn { width: min(320px, calc(100vw - 64px)); height: 60px; font-size: 28px; }
+  .feat, .tst, .wait, .fcols, .legal { margin-left: max(16px, env(safe-area-inset-left, 0px)); margin-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .feat { margin-top: 80px; } .tst { margin-top: 96px; } .wait { margin-top: 110px; } .footer { margin-top: 110px; padding-top: 72px; }
+  .fhead { flex-wrap: wrap; } .title { font-size: 26px; line-height: 32px; } .start { font-size: 17px; line-height: 22px; padding: 7px 14px; border-width: 2px; }
+  .mini { height: 32px; font-size: 13px; padding: 0 12px; } .mini i { width: 7px; height: 7px; }
+  .grid, .biz { grid-template-columns: 1fr; gap: 40px; } .biz { gap: 16px; }
+  .tag, .off { height: 26px; font-size: 12.5px; } .basis { font-size: 11px; }
+  .pname { font-size: 18px; } .pstore { font-size: 11px; } .pvar, .pnote, .was { font-size: 14px; } .price { font-size: 30px; } .pfoot { font-size: 12px; } .stack { width: 110px; height: 6px; }
+  .bcard { padding: 52px 18px 18px; } .bcard .price { font-size: 34px; } .calc { font-size: 13px; } .meter { height: 10px; }
+  .bigtitle, .wtitle { font-size: 44px; line-height: 48px; }
+  .tbody { grid-template-columns: 1fr; gap: 24px; min-height: 0; }
+  .quote { font-size: 22px; line-height: 29px; } .stats b { font-size: 64px; } .stats span, .by, .count { font-size: 14px; } .by b { height: 26px; }
+  .nav { width: 34px; height: 46px; } .tnav { flex-wrap: wrap; } .ask { margin-inline-start: 0; }
+  .lede { font-size: 16px; line-height: 23px; }
+  .nextup { flex-direction: column; align-items: flex-start; gap: 10px; padding: 22px 26px; --hp-radius: 32px; min-height: 0; } .nextup .pre { font-size: 16px; } .nextup .what { font-size: 26px; width: 100%; } .nextup .ring rect { rx: 32px; }
+  .wsteps, .wmsg { font-size: 14px; }
+  .todo li { grid-template-columns: 24px minmax(0, 1fr); gap: 10px 12px; padding: 14px 16px; } .todo input { width: 22px; height: 22px; border-radius: 7px; } .todo .when.tag { grid-column: 2; grid-row: 1; } .todo label { grid-column: 2; } .todo label b { font-size: 17px; } .todo label span { font-size: 14px; }
+  .fstack { height: 110px; } .fstack .photo { width: 96px; margin-inline: -8px; padding: 6px; } .fstack .fig strong { font-size: 17px; } .fstack .fig small { font-size: 8px; }
+  .ftitle { font-size: 40px; line-height: 44px; padding-inline: 16px; }
+  .pill-light, .footer .pill-dark { height: 32px; font-size: 13px; }
+  .fcols { gap: 40px; } .fcols a, .fcols p { font-size: 15px; width: auto; } .fcols h5 { font-size: 12px; } .legal { font-size: 12px; }
+}
+</style>
+</head>
+<body>
+
+
+<header class="header" id="header">
+  <div class="ticker" data-i18n-aria="tickerAria"><div class="track" id="track"></div></div>
+  <div class="bar">
+    <a class="brand" href="#top" data-i18n-aria="brandAria">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3.5" fill="#1a1a19"/><path d="M3 9.5h18" stroke="#f8f8f8" stroke-width="1.6"/><circle cx="16.5" cy="14.5" r="1.7" fill="#f8f8f8"/></svg>
+    </a>
+    <ul class="menus">
+      <li class="group">
+        <button class="pill pill-group hp-squircle" type="button" aria-expanded="false" aria-controls="m-money" style="--hp-pill-w:64"><span data-i18n="menuMoney"></span><span class="chev hp-squircle"><svg viewBox="0 0 8 8" aria-hidden="true"><path d="M1.5 3 4 5.5 6.5 3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+        <div class="panel hp-squircle" id="m-money"></div>
+      </li>
+      <li class="group">
+        <button class="pill pill-group hp-squircle" type="button" aria-expanded="false" aria-controls="m-tax" style="--hp-pill-w:56"><span data-i18n="menuTax"></span><span class="chev hp-squircle"><svg viewBox="0 0 8 8" aria-hidden="true"><path d="M1.5 3 4 5.5 6.5 3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+        <div class="panel hp-squircle" id="m-tax"></div>
+      </li>
+    </ul>
+    <div class="actions">
+      <div class="lang" id="lang" role="group" aria-label="Language / שפה">
+        <button type="button" data-set-lang="he" lang="he" aria-pressed="true">עב</button>
+        <button type="button" data-set-lang="en" lang="en" aria-pressed="false">EN</button>
+      </div>
+      <a class="pill pill-cta hop hp-squircle" href="#todo" id="todoPill"></a>
+      <a class="pill pill-dark hop hp-squircle hd" href="#sources"><svg viewBox="0 0 11 13" aria-hidden="true"><circle cx="5.5" cy="7" r="4.6" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M5.5 4.6V7l1.6 1" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span id="asOfTxt"></span></a>
+    </div>
+    <button class="burger" id="burger" type="button" aria-expanded="false" aria-controls="mmenu" data-i18n-aria="menuAria"><span><i></i><i></i><i></i></span></button>
+  </div>
+</header>
+<nav class="mmenu" id="mmenu" hidden>
+  <h4 data-i18n="menuMoney"></h4><a href="#holdings" data-i18n="navHoldings"></a><a href="#highlights" data-i18n="navHighlights"></a>
+  <h4 data-i18n="menuTax"></h4><a href="#business" data-i18n="navBusiness"></a><a href="#years" data-i18n="navYears"></a><a href="#todo" data-i18n="navTodo"></a>
+  <h4 data-i18n="navFiles"></h4><a href="#sources" data-i18n="navSources"></a>
+</nav>
+
+<main>
+  <section class="hero" id="top" aria-labelledby="hl">
+    <h1 class="headline" id="hl" data-i18n="headline"></h1>
+    <p class="sub" data-i18n="sub"></p>
+    <div class="total" id="total">
+      <span class="t-eyebrow" data-i18n="eyebrow"></span>
+      <button class="amt-btn hp-squircle" id="amtBtn" type="button"><span class="amt" id="amt"></span><span class="alt" id="alt"></span></button>
+      <div class="tbar" id="tbar" aria-hidden="true"></div>
+      <div class="legend" id="legend"></div>
+      <p class="tmeta" id="tmeta"></p>
+    </div>
+    <div class="ctas">
+      <a class="cta cta-request hop hp-squircle" href="#todo"><span data-i18n="ctaTodo"></span> <svg class="arrow" viewBox="0 0 10 10" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      <a class="cta cta-demo hop hp-squircle" href="#holdings" data-i18n="ctaHeld"></a>
+    </div>
+    <div class="band"><div class="logos-vp"><div class="logos" id="logos"></div></div></div>
+  </section>
+
+  <section class="canvas" id="highlights" data-i18n-aria="navHighlights">
+    <svg class="floor" id="floor" viewBox="0 0 1440 660" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
+    <div id="cards" style="display:contents"></div>
+    <a class="read hop hp-squircle" href="#todo"><span id="deadlineTxt"></span> <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 10 10 2M3.5 2H10v6.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    <div class="cta-join"><a class="ring-btn hp-squircle" href="#todo"><svg class="ring" aria-hidden="true"><rect class="g"/><rect class="d"/></svg><span data-i18n="ringBtn"></span></a></div>
+  </section>
+
+  <section class="feat" id="holdings" aria-labelledby="htitle">
+    <div class="fhead">
+      <h2 class="title" id="htitle"><span data-i18n="holdTitle"></span><span class="l2" data-i18n="holdSub"></span></h2>
+      <button class="start hop hp-squircle" id="curBtn" type="button"></button>
+    </div>
+    <div class="filters" id="filters" role="group"></div>
+    <div class="grid" id="grid"><div class="empty hp-squircle" data-i18n="holdEmpty"></div></div>
+  </section>
+
+  <section class="feat" id="business" aria-labelledby="btitle">
+    <div class="fhead">
+      <h2 class="title" id="btitle"><span data-i18n="bizTitle"></span><span class="l2" data-i18n="bizSub"></span></h2>
+    </div>
+    <div class="biz" id="biz"></div>
+  </section>
+
+  <section class="tst" id="years" aria-labelledby="ytitle">
+    <h2 class="bigtitle" id="ytitle" data-i18n="yearsTitle"></h2>
+    <div class="tbody">
+      <div>
+        <div class="tblk by" id="tBy" style="--dir:1"></div>
+        <p class="tblk quote" id="tQuote" style="--dir:1"></p>
+      </div>
+      <div class="tblk stats" id="tStats" style="--dir:1"></div>
+    </div>
+    <div class="tnav">
+      <button class="nav hp-squircle" id="prev" type="button" data-i18n-aria="prevYear"><svg viewBox="0 0 9 14" aria-hidden="true"><path d="M7 1.5 1.8 7 7 12.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <button class="nav hp-squircle" id="next" type="button" data-i18n-aria="nextYear"><svg viewBox="0 0 9 14" aria-hidden="true"><path d="M2 1.5 7.2 7 2 12.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <span class="count" id="count"></span>
+      <a class="ask hp-squircle" href="#sources"><span class="b1" data-i18n="ask1"></span><span class="b2" data-i18n="ask2"></span></a>
+    </div>
+  </section>
+
+  <section class="wait" id="todo" aria-labelledby="todo-title">
+    <h2 class="wtitle" id="todo-title" data-i18n="todoTitle"></h2>
+    <p class="lede" data-i18n="todoLede"></p>
+    <div class="nextup hp-squircle" id="nextup"><svg class="ring" aria-hidden="true"><rect class="g"/><rect class="d"/></svg><span class="pre" id="nextWhen"></span><span class="what" id="nextWhat"></span></div>
+    <div class="wsteps" id="wsteps"></div>
+    <ul class="todo" id="todoList"></ul>
+    <div class="wmsg" id="wmsg" aria-live="polite"></div>
+  </section>
+</main>
+
+<footer class="footer" aria-labelledby="ft">
+  <div class="fstack" id="fstack" aria-hidden="true"></div>
+  <h2 class="ftitle" id="ft" data-i18n-html="ftitle"></h2>
+  <div class="fpills"><a class="pill pill-light hp-squircle" href="#todo" data-i18n="navTodo"></a><a class="pill pill-dark hop hp-squircle" href="#top" data-i18n="backTop"></a></div>
+  <div class="fcols gut" id="sources">
+    <div><h5 data-i18n="colPage"></h5><a href="#holdings" data-i18n="navHoldings"></a><a href="#business" data-i18n="navBusiness"></a><a href="#years" data-i18n="navYears"></a><a href="#todo" data-i18n="navTodo"></a></div>
+    <div><h5 data-i18n="navSources"></h5><div id="srcList"></div></div>
+    <div><h5 data-i18n="colNotCounted"></h5><div id="notCounted"></div></div>
+  </div>
+  <div class="legal gut"><span id="legal1"></span><span data-i18n="legal2"></span></div>
+</footer>
+
+<script id="fin-data" type="application/json">{"asOf":"2026-11-21","fx":{"usdIls":3.326,"date":"2026-11-20","source":"Bank of Israel representative rate"},"holdings":[{"id":"cash-ils","group":"cash","ils":25000,"liquidity":"liquid","basis":"self","asOf":"2026-11-21","institution":{"en":"Bank","he":"בנק"},"name":{"en":"Checking account","he":"חשבון עו״ש"},"detail":{"en":"Shekel current account","he":"חשבון שקלי"},"source":{"en":"Your report, 21 Nov 2026","he":"דיווח שלך, 21/11/2026"},"note":{"en":"Approximate. No bank statement in the folder yet.","he":"בקירוב. אין עדיין דף חשבון בתיקייה."}},{"id":"cash-usd","group":"cash","ils":76000,"usd":22850,"liquidity":"liquid","basis":"self","asOf":"2026-11-21","institution":{"en":"Bank","he":"בנק"},"name":{"en":"Dollar account","he":"חשבון דולרי"},"detail":{"en":"About $22,850 in foreign currency","he":"כ-22,850$ במט״ח"},"source":{"en":"Your report, 21 Nov 2026","he":"דיווח שלך, 21/11/2026"},"note":{"en":"Part of it is meant to move to Interactive Israel.","he":"חלק ממנו מיועד להעברה ל-Interactive Israel."}},{"id":"ibkr","group":"invest","usdOnly":36852.16,"liquidity":"liquid","basis":"screenshot","asOf":null,"institution":{"en":"Interactive Israel","he":"Interactive Israel"},"name":{"en":"Stock portfolio","he":"תיק מניות"},"detail":{"en":"AAPL, MNDY, NVDA, TSLA, TTWO and $38 cash","he":"AAPL, MNDY, NVDA, TSLA, TTWO ו-38$ מזומן"},"source":{"en":"Broker screenshots","he":"צילומי מסך מהברוקר"},"note":{"en":"Screenshot has no date. Value moves with the market.","he":"לצילום אין תאריך. השווי משתנה עם השוק."}},{"id":"phoenix","group":"invest","ils":147695,"liquidity":"liquid","basis":"screenshot","asOf":"2026-07-31","ret12":6.87,"institution":{"en":"The Phoenix","he":"הפניקס"},"name":{"en":"Investment provident fund","he":"קופת גמל להשקעה"},"detail":{"en":"Active since May 2024","he":"פעילה ממאי 2024"},"source":{"en":"Fund screenshot","he":"צילום מסך מהקופה"},"note":{"en":"Can be withdrawn any time; gains are taxed on withdrawal.","he":"אפשר למשוך בכל עת; על הרווחים משלמים מס במשיכה."}},{"id":"yelin-active","group":"savings","ils":50151,"liquidity":"terms","basis":"screenshot","asOf":null,"ret12":17.5,"institution":{"en":"Yelin Lapidot","he":"ילין לפידות"},"name":{"en":"Study fund","he":"קרן השתלמות"},"detail":{"en":"The active one your employer pays into","he":"הפעילה, שהמעסיק מפקיד אליה"},"source":{"en":"Fund screenshot","he":"צילום מסך מהקופה"},"note":{"en":"Mixtiles adds 7.5% of salary here.","he":"מיקסטיילז מפקידה כאן 7.5% מהשכר."}},{"id":"yelin-study-old","group":"savings","ils":170208,"accounts":4,"flag":true,"liquidity":"terms","basis":"screenshot","asOf":null,"ret12":17.5,"institution":{"en":"Yelin Lapidot","he":"ילין לפידות"},"name":{"en":"Study funds, 4 inactive","he":"קרנות השתלמות, 4 לא פעילות"},"detail":{"en":"₪102,998 + ₪36,933 + ₪28,248 + ₪2,029","he":"₪102,998 + ₪36,933 + ₪28,248 + ₪2,029"},"source":{"en":"Fund screenshot","he":"צילום מסך מהקופה"},"note":{"en":"Nobody deposits into these any more.","he":"אף אחד כבר לא מפקיד אליהן."}},{"id":"yelin-gemel-old","group":"savings","ils":102492,"accounts":2,"flag":true,"liquidity":"terms","basis":"screenshot","asOf":null,"ret12":17.39,"institution":{"en":"Yelin Lapidot","he":"ילין לפידות"},"name":{"en":"Provident funds, 2 inactive","he":"קופות גמל, 2 לא פעילות"},"detail":{"en":"₪80,330 + ₪22,162","he":"₪80,330 + ₪22,162"},"source":{"en":"Fund screenshot","he":"צילום מסך מהקופה"},"note":{"en":"Nobody deposits into these any more.","he":"אף אחד כבר לא מפקיד אליהן."}},{"id":"migdal-main","group":"pension","ils":328301,"liquidity":"retire","basis":"screenshot","asOf":"2026-07-31","ret12":7.74,"institution":{"en":"Migdal","he":"מגדל"},"name":{"en":"Comprehensive pension","he":"קרן פנסיה מקיפה"},"detail":{"en":"Includes ₪108,628 of severance","he":"כולל ₪108,628 פיצויים"},"source":{"en":"Fund screenshot","he":"צילום מסך מהקרן"},"note":{"en":"Migdal projects ₪40,870 a month at 67 if deposits continue.","he":"מגדל צופה קצבה של ₪40,870 לחודש בגיל 67 אם ההפקדות יימשכו."}},{"id":"migdal-general","group":"pension","ils":24747,"liquidity":"retire","basis":"screenshot","asOf":"2026-07-31","ret12":7.74,"institution":{"en":"Migdal","he":"מגדל"},"name":{"en":"General pension fund","he":"קרן פנסיה כללית"},"detail":{"en":"Complementary fund for salary above the cap","he":"קרן משלימה לשכר שמעל התקרה"},"source":{"en":"Fund screenshot","he":"צילום מסך מהקרן"},"note":{"en":"Paid in alongside the comprehensive fund.","he":"מופקדת לצד הקרן המקיפה."}},{"id":"loan-mom","group":"family","ils":30000,"liquidity":"owed","basis":"self","asOf":"2026-11-21","institution":{"en":"Family","he":"משפחה"},"name":{"en":"Loan to Mom","he":"הלוואה לאמא"},"detail":{"en":"Money she owes you","he":"כסף שהיא חייבת לך"},"source":{"en":"Your report","he":"דיווח שלך"},"note":{"en":"No repayment date agreed yet.","he":"עוד לא סוכם מועד החזר."}},{"id":"loan-brother","group":"family","ils":30000,"liquidity":"owed","basis":"self","asOf":"2026-11-21","institution":{"en":"Family","he":"משפחה"},"name":{"en":"Loan to your brother","he":"הלוואה לאח"},"detail":{"en":"Money he owes you","he":"כסף שהוא חייב לך"},"source":{"en":"Your report","he":"דיווח שלך"},"note":{"en":"No repayment date agreed yet.","he":"עוד לא סוכם מועד החזר."}}],"positions":[{"ticker":"NVDA","usd":21368},{"ticker":"AAPL","usd":5581},{"ticker":"TSLA","usd":5205},{"ticker":"TTWO","usd":4457},{"ticker":"MNDY","usd":187.84},{"ticker":"Cash","usd":38.46}],"positionsTotalUsd":36851,"returns12m":{"overall":11.4,"pension":9.91,"financial":13.23},"salary":{"employer":"Mixtiles","since":"2024-04-14","baseMonthly":31000,"julyNet":20672.3,"julyGross":38638.17,"marginalRate":35,"ytd2026":{"gross":274631,"incomeTax":62800,"nationalInsurance":16011,"health":13149,"through":"July"}},"years":[{"year":2023,"stat":243215,"label":{"en":"Tax Authority summary","he":"סיכום רשות המסים"},"statLabel":{"en":"Gross salary","he":"שכר ברוטו"},"text":{"en":"One employer, Artlist. ₪243,215 in salary and ₪35,405 of income tax taken at source.","he":"מעסיק אחד, ארטליסט. ₪243,215 שכר ו-₪35,405 מס הכנסה שנוכה במקור."}},{"year":2024,"stat":401034,"label":{"en":"Tax assessment","he":"שומת מס"},"statLabel":{"en":"Total income","he":"סך ההכנסות"},"text":{"en":"Three employers including Artlist and Mixtiles paid ₪391,934, and the business added ₪9,100. The return left ₪10,400 to pay. ₪10,746 went to the Tax Authority on 15 Jul 2026, so this year looks closed.","he":"שלושה מעסיקים, ביניהם ארטליסט ומיקסטיילז, שילמו ₪391,934, והעסק הוסיף ₪9,100. מהדוח נותרו ₪10,400 לתשלום. ב-15/07/2026 שולמו ₪10,746 לרשות המסים, כך שהשנה נראית סגורה."}},{"year":2025,"stat":382433,"label":{"en":"Form 106 + small-business report","he":"טופס 106 + דיווח עסק זעיר"},"statLabel":{"en":"Gross salary","he":"שכר ברוטו"},"text":{"en":"A full year at Mixtiles. After income tax, Bituach Leumi, health tax and your pension share, about ₪237,300 reached you, around ₪19,800 a month. The business brought ₪25,000, and its ₪4,615 tax balance was paid on 25 Aug 2026.","he":"שנה מלאה במיקסטיילז. אחרי מס הכנסה, ביטוח לאומי, מס בריאות וחלקך בפנסיה, הגיעו אליך כ-₪237,300, בערך ₪19,800 בחודש. העסק הכניס ₪25,000, ויתרת המס שלו, ₪4,615, שולמה ב-25/08/2026."}},{"year":2026,"stat":274631,"label":{"en":"July payslip, year to date","he":"תלוש יולי, מתחילת השנה"},"statLabel":{"en":"Gross, Jan to Jul","he":"ברוטו, ינואר עד יולי"},"text":{"en":"₪274,631 gross through July with ₪62,800 income tax withheld. July take-home was ₪20,672 on a ₪31,000 base salary, at a 35% marginal rate. ₪70,000 gross from the business is still to come.","he":"₪274,631 ברוטו עד יולי, ו-₪62,800 מס הכנסה נוכה. הנטו ביולי היה ₪20,672 על שכר בסיס של ₪31,000, במדרגת מס שולית של 35%. עוד ₪70,000 ברוטו מהעסק בדרך."}}],"business":{"ceiling":120000,"expectedGross":70000,"income2025":25000,"reserve":{"deductionPct":30,"taxable":49000,"incomeTax":17150,"niHealth":8740,"total":25890,"net":44110,"assumptions":{"en":"Assumes the 30% small-business expense deduction, a 35% marginal bracket and the full self-employed Bituach Leumi and health rate of about 17.8%.","he":"מניח ניכוי הוצאות של 30% לעסק זעיר, מדרגת מס שולית של 35% ושיעור מלא של ביטוח לאומי ובריאות לעצמאי, כ-17.8%."}}},"todo":[{"id":"coord","kind":"urgent","when":{"en":"By 31 Dec","he":"עד 31/12"},"title":{"en":"Confirm your 2026 online tax coordination","he":"לוודא שבוצע תיאום מס מקוון ל-2026"},"detail":{"en":"It is one of the four conditions for keeping the small-business file, from the Tax Authority letter of 23 Dec 2025.","he":"זה אחד מארבעת התנאים להמשך הסיווג כעסק זעיר, לפי מכתב רשות המסים מ-23/12/2025."}},{"id":"reserve","kind":"urgent","when":{"en":"When paid","he":"כשיתקבל"},"title":{"en":"Put about ₪26,000 aside from the ₪70,000","he":"לשים בצד כ-₪26,000 מתוך ה-₪70,000"},"detail":{"en":"Rough estimate for income tax and Bituach Leumi. About ₪44,000 is yours to keep.","he":"הערכה גסה למס הכנסה ולביטוח לאומי. כ-₪44,000 נשארים אצלך."}},{"id":"receipt","kind":"normal","when":{"en":"When paid","he":"כשיתקבל"},"title":{"en":"Issue a receipt without VAT","he":"להוציא קבלה בלי מע״מ"},"detail":{"en":"You are registered as an exempt dealer, so no VAT is added to the invoice.","he":"תיק המע״מ שלך הוא עוסק פטור, ולכן לא מוסיפים מע״מ לחשבונית."}},{"id":"ceiling","kind":"normal","when":{"en":"This month","he":"החודש"},"title":{"en":"Check 2026 business income stays under ₪120,000","he":"לבדוק שהכנסות העסק ב-2026 נשארות מתחת ל-₪120,000"},"detail":{"en":"Both the small-business and exempt-dealer tracks depend on it. The figure is from the 2025 letter, so confirm it for 2026.","he":"גם מסלול עסק זעיר וגם עוסק פטור תלויים בזה. הסכום לקוח ממכתב 2025, ולכן צריך לאמת אותו ל-2026."}},{"id":"bl","kind":"normal","when":{"en":"This month","he":"החודש"},"title":{"en":"Confirm your Bituach Leumi status as self-employed","he":"לבדוק את המעמד בביטוח לאומי כעצמאי"},"detail":{"en":"Self-employed contributions on the business income are not set up anywhere in the documents.","he":"תשלומי ביטוח לאומי על הכנסות העסק לא מופיעים באף מסמך."}},{"id":"statement","kind":"normal","when":{"en":"Anytime","he":"בכל עת"},"title":{"en":"Download a Tax Authority account statement","he":"להוריד מצב חשבון מרשות המסים"},"detail":{"en":"To confirm 2024 and 2025 are fully closed after the payments of 15 Jul and 25 Aug.","he":"כדי לוודא ש-2024 ו-2025 סגורות לגמרי אחרי התשלומים מ-15/07 ומ-25/08."}},{"id":"inactive","kind":"normal","when":{"en":"Anytime","he":"בכל עת"},"title":{"en":"Ask Yelin Lapidot about the 6 inactive accounts","he":"לברר בילין לפידות על 6 החשבונות הלא פעילים"},"detail":{"en":"₪272,700 sits in accounts nobody pays into. Ask what fees each charges and whether they can be merged.","he":"₪272,700 יושבים בחשבונות שאף אחד לא מפקיד אליהם. לברר כמה דמי ניהול גובה כל אחד ואם אפשר לאחד אותם."}},{"id":"loans","kind":"normal","when":{"en":"Anytime","he":"בכל עת"},"title":{"en":"Write down the family loans with repayment dates","he":"לתעד בכתב את ההלוואות למשפחה עם מועדי החזר"},"detail":{"en":"₪60,000 owed by Mom and your brother, with no dates agreed.","he":"₪60,000 שאמא והאח חייבים, בלי מועד מוסכם."}},{"id":"refresh","kind":"monthly","when":{"en":"Monthly","he":"כל חודש"},"title":{"en":"Send fresh balances","he":"לשלוח יתרות עדכניות"},"detail":{"en":"Bank and dollar account are from what you told me; the IBKR screenshot is undated.","he":"העו״ש והחשבון הדולרי מבוססים על מה שסיפרת; לצילום ה-IBKR אין תאריך."}},{"id":"spend","kind":"normal","when":{"en":"Anytime","he":"בכל עת"},"title":{"en":"Track one month of spending","he":"לעקוב אחרי ההוצאות במשך חודש אחד"},"detail":{"en":"It is the missing number for your savings rate and long-range plans.","he":"זה המספר שחסר כדי לחשב שיעור חיסכון ולתכנן לטווח ארוך."}}],"notCounted":[{"en":"ETH held in 2023: no current balance","he":"ETH שהוחזק ב-2023: אין יתרה עדכנית"},{"en":"Credit card charges not yet billed","he":"חיובי אשראי שעוד לא ירדו"},{"en":"The ₪70,000 business payment until it arrives","he":"תשלום העסק של ₪70,000, עד שיתקבל"}]}</script>
+<script>
+(() => {
+  const D = JSON.parse(document.getElementById('fin-data').textContent);
+  const FX = D.fx.usdIls;
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); return true; } catch (e) { return false; } } };
+  const state = { lang: store.get('mf-lang') === 'en' ? 'en' : 'he', cur: store.get('mf-cur') === 'USD' ? 'USD' : 'ILS', filter: 'all', year: D.years.length - 1 };
+  const L = v => (v && typeof v === 'object' && !Array.isArray(v)) ? (v[state.lang] ?? v.en) : v;
+
+  // ---------- strings ----------
+  const T = {
+    en: {
+      tickerAria: 'Key numbers', brandAria: 'My Finance, back to top', menuAria: 'Menu',
+      menuMoney: 'Money', menuTax: 'Tax', navHoldings: 'Everything you hold', navHighlights: 'Highlights', navBusiness: 'The business', navYears: 'Year by year', navTodo: 'To-do', navFiles: 'Files', navSources: 'Sources',
+      headline: 'My Finance.', sub: 'Everything you own, are owed and still expect, pulled from your payslips, tax letters and fund screens.',
+      eyebrow: 'Your net worth adds up to', ctaTodo: 'See what to do', ctaHeld: "Where it's held",
+      showUsd: 'Show in dollars', showIls: 'Show in shekels', about: 'About', perDollar: 'per dollar',
+      tmeta: (liq, np) => `<b>${liq}</b> of it you could reach within days. Without pension it's <b>${np}</b>. Balances come from different dates between July and November 2026, and the ₪70,000 you're owed isn't counted.`,
+      ringBtn: 'What to do next', deadline: 'By 31 Dec: tax coordination',
+      holdTitle: 'Everything you hold', holdSub: 'Balances exactly as each source shows them', holdEmpty: 'Your accounts appear here with their balance, date and source.', filterAria: 'Filter holdings', all: 'All',
+      groups: { cash: 'Cash', invest: 'Investments', savings: 'Study & provident', pension: 'Pension', family: 'Owed by family' },
+      liq: { liquid: 'Liquid', terms: 'Fund terms apply', retire: 'Until retirement', owed: 'Not liquid' },
+      basis: { self: 'You told me', screenshot: 'From a screenshot', document: 'From a document' },
+      inactive: 'Inactive', ofNet: 'OF NET WORTH', asOf: 'As of', noDate: 'Screenshot date not shown', ret: '12 mo, product type',
+      bizTitle: 'The business', bizSub: 'Small-business tax file and an exempt dealer for VAT',
+      b1tag: 'Not paid yet', b1lab: 'Expected payment', b1note: "Gross, for work already done. As an exempt dealer you don't add VAT.",
+      b1rows: ['Income tax file', 'Small business', 'VAT file', 'Exempt dealer', '2025 business income'],
+      b2tag: 'Keep aside', b2lab: 'Tax and Bituach Leumi on it', b2rows: p => [`Taxable after ${p}% expenses`, 'Income tax at 35%', 'Bituach Leumi and health', 'Yours to keep'], b2note: 'Rough estimate.',
+      b3tag: 'Room left', b3lab: '2026 income ceiling', b3note: (a, c) => `${a} of ${c} used if the payment is your only 2026 business income.`, b3note2: 'Ceiling from the Tax Authority letter of 23 Dec 2025. Confirm it for 2026.',
+      yearsTitle: 'Year by year', prevYear: 'Previous year', nextYear: 'Next year', ask1: "Where's this from?", ask2: 'See the sources',
+      todoTitle: 'What to do next', todoLede: 'Ten things that keep the tax files clean and the numbers current. Tick them off as you go; the ticks stay in this browser.',
+      todoPill: n => `To-do (${n})`, allDone: 'All done', nothingOpen: 'Nothing open. Send fresh balances when you have them.',
+      steps: (o, u, d) => `<b>${o} open</b><span>·</span><span>${u} urgent</span><span>·</span><span>${d} done</span>`,
+      ticked: 'Ticked off.', unticked: 'Moved back to open.', noSave: 'Ticks will reset when you leave, because this browser blocks saving.',
+      ftitle: 'Know where<br>every shekel is.', backTop: 'Back to top', colPage: 'This page', colNotCounted: 'Not counted yet',
+      sources: ['Form 106, 2025', 'Payslip, July 2026', 'Tax assessment, 2024', 'Small-business report, 2025', 'Small-business approval, Dec 2025', 'Fund and broker screenshots'],
+      legal1: (d, fx, fd) => `Built ${d} from your files. Dollar figures use ${fx} shekels per dollar, the Bank of Israel rate of ${fd}.`,
+      legal2: 'Indicative figures for your own planning. Not an official statement, a balance confirmation or investment advice.',
+      asOfPill: d => `As of ${d}`,
+      tick: { net: 'Net worth', liquid: 'Liquid', pension: 'Pension', savings: 'Study & provident', fx: 'USD/ILS', incoming: 'Incoming', incomingV: '₪70,000 gross', next: 'Next deadline', nextV: '31 Dec, tax coordination', july: 'July take-home', debts: 'Loans and debts', p67: 'Pension at 67', p67v: '₪40,870 a month' },
+      menuMoneyItems: [['Cash', 'Checking and dollar accounts'], ['Investments', 'Interactive Israel and the Phoenix fund'], ['Study & provident', 'Seven Yelin Lapidot accounts'], ['Pension', 'Two Migdal funds'], ['Owed by family', 'Mom and your brother'], ['Highlights', 'The numbers that matter today']],
+      menuTaxItems: [['The business', 'The ₪70,000 and what to keep aside'], ['Year by year', 'Income and tax, 2023 to 2026'], ['To-do', 'Deadlines and open questions'], ['Sources', 'Which file each number came from']],
+      logos: ['Migdal', 'Yelin Lapidot', 'The Phoenix', 'Interactive Israel', 'Mixtiles', 'Israel Tax Authority', 'Bituach Leumi', 'Bank of Israel'],
+      cards: {
+        incoming: ['₪70,000 on the way', r => `Gross, from the business. Not paid yet. Keep about ${r} for tax.`],
+        liquid: ['Liquid now', 'Cash, dollars, IBKR and the Phoenix fund', 'within days'],
+        pension: ['Pension at 67', '/mo', 'Migdal projection', 'if deposits continue'],
+        nvda: [p => `NVDA is ${p}% of your IBKR account`, (a, b) => `${a} of ${b} in the positions screenshot.`],
+        july: ['July take-home', 'Base salary ₪31,000', '35% marginal rate'],
+        inactive: [n => `${n} inactive accounts`, v => `${v} at Yelin Lapidot that nobody pays into.`],
+        debts: ['Loans and debts', 'No loans. 2024 and 2025 tax paid.', 'per the payment emails']
+      },
+      foot: ['Net worth', 'Liquid', 'Pension', 'IBKR', 'Debts']
+    },
+    he: {
+      tickerAria: 'מספרים מרכזיים', brandAria: 'הכסף שלי, חזרה למעלה', menuAria: 'תפריט',
+      menuMoney: 'כסף', menuTax: 'מס', navHoldings: 'כל מה שיש לך', navHighlights: 'עיקרי הדברים', navBusiness: 'העסק', navYears: 'שנה אחרי שנה', navTodo: 'משימות', navFiles: 'קבצים', navSources: 'מקורות',
+      headline: 'הכסף שלי.', sub: 'כל מה שיש לך, מה שחייבים לך ומה שעוד צפוי להיכנס, מתוך התלושים, מכתבי המס ומסכי הקופות.',
+      eyebrow: 'השווי הנקי שלך מסתכם ב', ctaTodo: 'מה צריך לעשות', ctaHeld: 'איפה הכסף נמצא',
+      showUsd: 'הצג בדולרים', showIls: 'הצג בשקלים', about: 'בערך', perDollar: 'לדולר',
+      tmeta: (liq, np) => `<b>${liq}</b> מתוכו אפשר להשיג תוך ימים. בלי הפנסיה זה <b>${np}</b>. היתרות מתאריכים שונים בין יולי לנובמבר 2026, וה-₪70,000 שמגיעים לך לא נספרו.`,
+      ringBtn: 'מה עושים עכשיו', deadline: 'עד 31/12: תיאום מס',
+      holdTitle: 'כל מה שיש לך', holdSub: 'היתרות בדיוק כפי שהן מופיעות בכל מקור', holdEmpty: 'החשבונות שלך יופיעו כאן עם היתרה, התאריך והמקור.', filterAria: 'סינון נכסים', all: 'הכל',
+      groups: { cash: 'מזומן', invest: 'השקעות', savings: 'השתלמות וגמל', pension: 'פנסיה', family: 'חובות משפחה' },
+      liq: { liquid: 'נזיל', terms: 'לפי תנאי הקופה', retire: 'עד הפרישה', owed: 'לא נזיל' },
+      basis: { self: 'דיווח שלך', screenshot: 'מצילום מסך', document: 'ממסמך' },
+      inactive: 'לא פעיל', ofNet: 'מהשווי הנקי', asOf: 'נכון ל-', noDate: 'אין תאריך בצילום', ret: '12 חודשים, לפי סוג מוצר',
+      bizTitle: 'העסק', bizSub: 'תיק עסק זעיר במס הכנסה ועוסק פטור במע״מ',
+      b1tag: 'טרם שולם', b1lab: 'תשלום צפוי', b1note: 'ברוטו, על עבודה שכבר בוצעה. כעוסק פטור לא מוסיפים מע״מ.',
+      b1rows: ['תיק מס הכנסה', 'עסק זעיר', 'תיק מע״מ', 'עוסק פטור', 'הכנסות העסק ב-2025'],
+      b2tag: 'לשים בצד', b2lab: 'מס וביטוח לאומי עליו', b2rows: p => [`חייב במס אחרי ${p}% הוצאות`, 'מס הכנסה ב-35%', 'ביטוח לאומי ובריאות', 'נשאר אצלך'], b2note: 'הערכה גסה.',
+      b3tag: 'מקום פנוי', b3lab: 'תקרת הכנסות 2026', b3note: (a, c) => `${a} מתוך ${c} נוצלו, אם זו ההכנסה היחידה של העסק ב-2026.`, b3note2: 'התקרה ממכתב רשות המסים מ-23/12/2025. צריך לאמת אותה ל-2026.',
+      yearsTitle: 'שנה אחרי שנה', prevYear: 'השנה הקודמת', nextYear: 'השנה הבאה', ask1: 'מאיפה זה?', ask2: 'למקורות',
+      todoTitle: 'מה עושים עכשיו', todoLede: 'עשרה דברים ששומרים על תיקי המס מסודרים ועל המספרים מעודכנים. מסמנים כל משימה שבוצעה; הסימונים נשמרים בדפדפן הזה.',
+      todoPill: n => `משימות (${n})`, allDone: 'הכל בוצע', nothingOpen: 'אין משימות פתוחות. כדאי לשלוח יתרות עדכניות כשיהיו.',
+      steps: (o, u, d) => `<b>${o} פתוחות</b><span>·</span><span>${u} דחופות</span><span>·</span><span>${d} בוצעו</span>`,
+      ticked: 'סומן כבוצע.', unticked: 'הוחזר לפתוחות.', noSave: 'הסימונים יתאפסו ביציאה, כי הדפדפן הזה חוסם שמירה.',
+      ftitle: 'לדעת איפה<br>כל שקל נמצא.', backTop: 'חזרה למעלה', colPage: 'בעמוד הזה', colNotCounted: 'עוד לא נספר',
+      sources: ['טופס 106, 2025', 'תלוש שכר, יולי 2026', 'שומת מס, 2024', 'דיווח עסק זעיר, 2025', 'אישור עסק זעיר, דצמבר 2025', 'צילומי מסך מהקופות ומהברוקר'],
+      legal1: (d, fx, fd) => `נבנה ב-${d} מהקבצים שלך. הסכומים בדולרים לפי ${fx} ₪ לדולר, השער היציג של בנק ישראל מ-${fd}.`,
+      legal2: 'נתונים אינדיקטיביים לתכנון אישי. אינם דוח רשמי, אישור יתרה או ייעוץ השקעות.',
+      asOfPill: d => `נכון ל-${d}`,
+      tick: { net: 'שווי נקי', liquid: 'נזיל', pension: 'פנסיה', savings: 'השתלמות וגמל', fx: 'דולר/שקל', incoming: 'צפוי להיכנס', incomingV: '₪70,000 ברוטו', next: 'הדדליין הבא', nextV: '31/12, תיאום מס', july: 'נטו ביולי', debts: 'הלוואות וחובות', p67: 'פנסיה בגיל 67', p67v: '₪40,870 לחודש' },
+      menuMoneyItems: [['מזומן', 'עו״ש וחשבון דולרי'], ['השקעות', 'Interactive Israel וגמל להשקעה בהפניקס'], ['השתלמות וגמל', 'שבעה חשבונות בילין לפידות'], ['פנסיה', 'שתי קרנות במגדל'], ['חובות משפחה', 'אמא והאח'], ['עיקרי הדברים', 'המספרים שחשובים היום']],
+      menuTaxItems: [['העסק', 'ה-₪70,000 וכמה לשים בצד'], ['שנה אחרי שנה', 'הכנסות ומס, 2023 עד 2026'], ['משימות', 'דדליינים ושאלות פתוחות'], ['מקורות', 'מאיזה קובץ הגיע כל מספר']],
+      logos: ['מגדל', 'ילין לפידות', 'הפניקס', 'Interactive Israel', 'Mixtiles', 'רשות המסים', 'ביטוח לאומי', 'בנק ישראל'],
+      cards: {
+        incoming: ['₪70,000 בדרך', r => `ברוטו, מהעסק. עוד לא שולם. לשמור כ-${r} למס.`],
+        liquid: ['נזיל עכשיו', 'מזומן, דולרים, IBKR וגמל להשקעה', 'תוך ימים'],
+        pension: ['פנסיה בגיל 67', '/חודש', 'תחזית של מגדל', 'אם ההפקדות יימשכו'],
+        nvda: [p => `NVDA הוא ${p}% מתיק ה-IBKR`, (a, b) => `${a} מתוך ${b} בצילום הפוזיציות.`],
+        july: ['נטו ביולי', 'שכר בסיס ₪31,000', 'מס שולי 35%'],
+        inactive: [n => `${n} חשבונות לא פעילים`, v => `${v} בילין לפידות שאף אחד לא מפקיד אליהם.`],
+        debts: ['הלוואות וחובות', 'אין הלוואות. המס ל-2024 ול-2025 שולם.', 'לפי מיילי התשלום']
+      },
+      foot: ['שווי נקי', 'נזיל', 'פנסיה', 'IBKR', 'חובות']
+    }
+  };
+  const t = () => T[state.lang];
+
+  // ---------- numbers ----------
+  D.holdings.forEach(h => { if (h.usdOnly) { h.usd = h.usdOnly; h.ils = h.usdOnly * FX; } });
+  const GC = { cash: 'var(--blue)', invest: 'var(--purple)', savings: 'var(--yellow)', pension: 'var(--ink)', family: 'var(--pill-hover)' };
+  const sum = arr => arr.reduce((a, h) => a + h.ils, 0);
+  const total = sum(D.holdings);
+  const liquid = sum(D.holdings.filter(h => h.liquidity === 'liquid'));
+  const byGroup = Object.keys(GC).map(k => ({ k, c: GC[k], v: sum(D.holdings.filter(h => h.group === k)) }));
+  const G = k => byGroup.find(g => g.k === k);
+  const iso = s => '⁦' + s + '⁩';   // keep numbers left-to-right inside Hebrew text
+  const nf = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 });
+  const ils = v => iso('₪' + nf.format(Math.round(v)));
+  const usd = v => iso('$' + nf.format(Math.round(v)));
+  const money = (v, cur = state.cur) => cur === 'USD' ? usd(v / FX) : ils(v);
+  const other = v => state.cur === 'USD' ? ils(v) : usd(v / FX);
+  const short = (v, cur = state.cur) => {
+    const x = cur === 'USD' ? v / FX : v, s = cur === 'USD' ? '$' : '₪';
+    if (x >= 1e6) return iso(s + (x / 1e6).toFixed(2).replace(/0$/, '') + 'M');
+    if (x >= 1e4) return iso(s + Math.round(x / 1e3) + 'K');
+    return iso(s + nf.format(Math.round(x)));
+  };
+  const fmtDate = s => { if (!s) return ''; const d = new Date(s + 'T12:00:00'); return state.lang === 'he' ? d.toLocaleDateString('en-GB').replace(/\//g, '/') : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }); };
+  const ibkr = D.holdings.find(h => h.id === 'ibkr');
+  const nv = D.positions.find(p => p.ticker === 'NVDA');
+  const inactive = D.holdings.filter(h => h.flag);
+  const res = D.business.reserve;
+
+  // ---------- static ----------
+  const paintStatic = () => {
+    const root = document.documentElement;
+    root.lang = state.lang; root.dir = state.lang === 'he' ? 'rtl' : 'ltr';
+    document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t()[el.dataset.i18n]; });
+    document.querySelectorAll('[data-i18n-html]').forEach(el => { el.innerHTML = t()[el.dataset.i18nHtml]; });
+    document.querySelectorAll('[data-i18n-aria]').forEach(el => { el.setAttribute('aria-label', t()[el.dataset.i18nAria]); });
+    $('lang').dataset.lang = state.lang;
+    $('lang').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.setLang === state.lang));
+    $('filters').setAttribute('aria-label', t().filterAria);
+    $('mmenu').setAttribute('aria-label', t().menuAria);
+    $('asOfTxt').textContent = t().asOfPill(fmtDate(D.asOf));
+    $('deadlineTxt').textContent = t().deadline;
+  };
+
+  const paintTicker = () => {
+    const k = t().tick;
+    const rows = [[k.net, ils(total)], [k.liquid, ils(liquid)], [k.pension, ils(G('pension').v)], [k.savings, ils(G('savings').v)],
+      ['Interactive Israel', iso('$' + ibkr.usd.toLocaleString('en-US', { minimumFractionDigits: 2 }))], [k.fx, FX.toFixed(3)], [k.incoming, k.incomingV], [k.next, k.nextV],
+      [k.july, ils(D.salary.julyNet)], [k.debts, iso('₪0')], [k.p67, k.p67v]];
+    const run = '<ul class="run">' + rows.map(([a, b]) => `<li class="item">${esc(a)} <b>${esc(b)}</b></li><li class="sep" aria-hidden="true"></li>`).join('') + '</ul>';
+    $('track').innerHTML = run + run.replace('<ul class="run">', '<ul class="run" aria-hidden="true">');
+  };
+
+  const paintMenus = () => {
+    const mk = (id, items, hrefs, colors) => { $(id).innerHTML = items.map(([a, b], i) => `<a class="mitem" href="${hrefs[i]}" style="--i:${i};--c:${colors[i]}"><span class="ic"><i></i></span><span class="t">${esc(a)}</span><span class="b">${esc(b)}</span></a>`).join(''); };
+    mk('m-money', t().menuMoneyItems, ['#holdings', '#holdings', '#holdings', '#holdings', '#holdings', '#highlights'], [GC.cash, GC.invest, GC.savings, GC.pension, GC.family, 'var(--orange)']);
+    mk('m-tax', t().menuTaxItems, ['#business', '#years', '#todo', '#sources'], ['var(--orange)', 'var(--ink)', 'var(--purple)', 'var(--blue)']);
+    const lg = t().logos.map(n => `<span class="logo"><span class="wm">${esc(n)}</span></span>`).join('');
+    $('logos').innerHTML = lg + lg;
+  };
+
+  // ---------- hero ----------
+  const paintTotal = () => {
+    $('amt').innerHTML = `<span class="approx">≈</span>${money(total)}`;
+    $('alt').textContent = `${t().about} ${other(total)} · ${FX} ₪ ${t().perDollar}`;
+    $('tbar').innerHTML = byGroup.map(g => `<i class="seg" style="flex:${g.v};background:${g.c}" title="${esc(t().groups[g.k])} ${money(g.v)}"></i>`).join('');
+    $('legend').innerHTML = byGroup.map(g => `<span><i style="background:${g.c}"></i>${esc(t().groups[g.k])} <b>${short(g.v)}</b></span>`).join('');
+    $('tmeta').innerHTML = t().tmeta(money(liquid), money(total - G('pension').v));
+    const label = state.cur === 'USD' ? t().showIls : t().showUsd;
+    $('curBtn').textContent = label; $('amtBtn').title = label;
+  };
+
+  // ---------- canvas ----------
+  const paintCards = () => {
+    const c = t().cards, nvPct = Math.round(nv.usd / D.positionsTotalUsd * 100), nIn = inactive.reduce((a, h) => a + h.accounts, 0);
+    const list = [
+      { k: 'note', cls: 'yellow', x: 150, y: 96, w: 250, r: -4, wide: true, a: c.incoming[0], b: c.incoming[1](ils(res.total)) },
+      { k: 'photo', x: 450, y: 56, w: 240, r: 3, lab: c.liquid[0], fig: short(liquid), tag: c.liquid[1], sub: c.liquid[2] },
+      { k: 'photo', x: 750, y: 118, w: 240, r: -2, lab: c.pension[0], fig: `${ils(40870)}<s>${c.pension[1]}</s>`, tag: c.pension[2], sub: c.pension[3] },
+      { k: 'note', cls: 'blue', x: 1060, y: 72, w: 250, r: 4, a: c.nvda[0](nvPct), b: c.nvda[1](usd(nv.usd), usd(D.positionsTotalUsd)) },
+      { k: 'photo', x: 110, y: 330, w: 230, r: 2, lab: c.july[0], fig: ils(D.salary.julyNet), tag: c.july[1], sub: c.july[2] },
+      { k: 'note', cls: 'purple', x: 420, y: 352, w: 240, r: -3, a: c.inactive[0](nIn), b: c.inactive[1](ils(sum(inactive))) },
+      { k: 'photo', x: 1110, y: 330, w: 230, r: -3, lab: c.debts[0], fig: ils(0), tag: c.debts[1], sub: c.debts[2] }
+    ];
+    $('cards').innerHTML = list.map(o => {
+      const st = `--x:${o.x};--y:${o.y};--w:${o.w};--r:${o.r}deg`;
+      if (o.k === 'note') return `<div class="ccard" style="${st}"><span class="note hp-squircle ${o.cls}">${esc(o.a)}<small>${esc(o.b)}</small></span></div>`;
+      return `<div class="ccard" style="${st}"><span class="photo hp-squircle"><span class="fig"><small>${esc(o.lab)}</small><strong>${o.fig}</strong></span><span class="ptag">${esc(o.tag)} <s>${esc(o.sub)}</s></span></span></div>`;
+    }).join('');
+  };
+
+  // ---------- holdings ----------
+  const LIQC = { liquid: 't-in', terms: 't-target', retire: 't-out', owed: 't-wait' };
+  const donut = (share, c) => {
+    const r = 30, C = 2 * Math.PI * r, len = Math.max(share * C, 1.5);
+    return `<svg class="donut" viewBox="0 0 80 80" aria-hidden="true"><circle class="trk" cx="40" cy="40" r="${r}" stroke-width="7"/><circle class="arc" cx="40" cy="40" r="${r}" stroke-width="7" stroke-dasharray="${len} ${C}" transform="rotate(-90 40 40)" style="--c:${c}"/><text x="40" y="42" text-anchor="middle">${(share * 100).toFixed(1)}%</text><text class="s" x="40" y="52" text-anchor="middle">${esc(t().ofNet)}</text></svg>`;
+  };
+  const paintFilters = () => {
+    const opts = [{ k: 'all', v: total }].concat(byGroup);
+    $('filters').innerHTML = opts.map(o => `<button class="mini hp-squircle" type="button" data-f="${o.k}" aria-pressed="${state.filter === o.k}">${o.c ? `<i style="--c:${o.c}"></i>` : ''}${esc(o.k === 'all' ? t().all : t().groups[o.k])} <span>${short(o.v)}</span></button>`).join('');
+  };
+  const paintGrid = animate => {
+    const list = D.holdings.filter(h => state.filter === 'all' || h.group === state.filter).sort((a, b) => b.ils - a.ils);
+    const pc = ['var(--purple)', 'var(--blue)', 'var(--yellow)', 'var(--orange)', 'var(--ink)', 'var(--rule)'];
+    $('grid').innerHTML = list.map((h, i) => {
+      const alt = h.usdOnly ? iso('$' + h.usd.toLocaleString('en-US', { minimumFractionDigits: 2 })) : other(h.ils);
+      const stack = h.id === 'ibkr' ? `<span class="stack">${D.positions.map((p, j) => `<i style="flex:${p.usd};background:${pc[j]}" title="${p.ticker} $${nf.format(p.usd)}"></i>`).join('')}</span>` : '';
+      const right = h.ret12 ? `<span class="up">${iso('+' + h.ret12.toFixed(2) + '%')} <span>${esc(t().ret)}</span></span>` : (stack || `<span>${esc(L(h.source))}</span>`);
+      return `<article class="pcard${animate ? ' hopin' : ''}" style="--i:${i}">
+        <div class="well hp-squircle">${donut(h.ils / total, GC[h.group])}<span class="tag ${LIQC[h.liquidity]}">${esc(t().liq[h.liquidity])}</span>${h.flag ? `<span class="off">${esc(t().inactive)}</span>` : ''}<span class="basis">${esc(t().basis[h.basis])}</span></div>
+        <div class="pmeta"><span class="pstore">${esc(L(h.institution))}</span><h3 class="pname">${esc(L(h.name))}</h3><p class="pvar">${esc(L(h.detail))}</p></div>
+        <div class="prices"><span class="price">${money(h.ils)}</span><span class="was">${alt}</span></div>
+        <p class="pnote">${esc(L(h.note))}</p>
+        <div class="pfoot"><span>${h.asOf ? esc(t().asOf + (state.lang === 'he' ? '' : ' ') + fmtDate(h.asOf)) : esc(t().noDate)}</span>${right}</div>
+      </article>`;
+    }).join('');
+  };
+  $('filters').addEventListener('click', e => { const b = e.target.closest('[data-f]'); if (!b) return; state.filter = b.dataset.f; paintFilters(); paintGrid(true); });
+
+  // ---------- business ----------
+  const paintBiz = () => {
+    const B = D.business, x = t(), r2 = x.b2rows(res.deductionPct), used = B.expectedGross;
+    $('biz').innerHTML = `
+      <article class="bcard hp-squircle"><span class="tag t-wait">${esc(x.b1tag)}</span>
+        <span class="pstore">${esc(x.b1lab)}</span><span class="price">${money(B.expectedGross)}</span>
+        <p class="pnote">${esc(x.b1note)}</p>
+        <dl class="calc"><div><dt>${esc(x.b1rows[0])}</dt><dd>${esc(x.b1rows[1])}</dd></div><div><dt>${esc(x.b1rows[2])}</dt><dd>${esc(x.b1rows[3])}</dd></div><div><dt>${esc(x.b1rows[4])}</dt><dd>${money(B.income2025)}</dd></div></dl>
+      </article>
+      <article class="bcard hp-squircle"><span class="tag t-target float">${esc(x.b2tag)}</span>
+        <span class="pstore">${esc(x.b2lab)}</span><span class="price"><span class="approx">≈</span>${money(res.total)}</span>
+        <dl class="calc">
+          <div><dt>${esc(r2[0])}</dt><dd>${money(res.taxable)}</dd></div>
+          <div><dt>${esc(r2[1])}</dt><dd>${money(res.incomeTax)}</dd></div>
+          <div><dt>${esc(r2[2])}</dt><dd>${money(res.niHealth)}</dd></div>
+          <div class="tot"><dt>${esc(r2[3])}</dt><dd>${money(res.net)}</dd></div>
+        </dl>
+        <p class="pnote">${esc(x.b2note)} ${esc(L(res.assumptions))}</p>
+      </article>
+      <article class="bcard hp-squircle"><span class="tag t-in">${esc(x.b3tag)}</span>
+        <span class="pstore">${esc(x.b3lab)}</span><span class="price">${money(B.ceiling - used)}</span>
+        <p class="pnote">${esc(x.b3note(money(used), money(B.ceiling)))}</p>
+        <div class="meter" aria-hidden="true"><i style="width:${used / B.ceiling * 100}%;background:var(--blue)"></i></div>
+        <p class="pnote">${esc(x.b3note2)}</p>
+      </article>`;
+  };
+
+  // ---------- years ----------
+  const paintYear = dir => {
+    const y = D.years[state.year], blocks = [$('tBy'), $('tQuote'), $('tStats')];
+    const paint = () => {
+      $('tBy').innerHTML = `<b>${y.year}</b><span>${esc(L(y.label))}</span>`;
+      $('tQuote').textContent = L(y.text);
+      $('tStats').innerHTML = `<b>${short(y.stat, 'ILS')}</b><span>${esc(L(y.statLabel))}</span>`;
+      $('count').textContent = String(state.year + 1).padStart(2, '0') + '/' + String(D.years.length).padStart(2, '0');
+    };
+    if (!dir) { paint(); return; }
+    blocks.forEach(b => { b.style.setProperty('--dir', dir * (state.lang === 'he' ? -1 : 1)); b.dataset.phase = 'out'; });
+    setTimeout(() => { paint(); blocks.forEach(b => b.dataset.phase = 'pre'); void blocks[0].offsetWidth; blocks.forEach(b => b.dataset.phase = 'in'); }, 220);
+  };
+  $('prev').addEventListener('click', () => { state.year = (state.year - 1 + D.years.length) % D.years.length; paintYear(-1); });
+  $('next').addEventListener('click', () => { state.year = (state.year + 1) % D.years.length; paintYear(1); });
+
+  // ---------- to-do ----------
+  let done = {};
+  try { done = JSON.parse(store.get('mf-done') || '{}') || {}; } catch (e) {}
+  const paintTodo = () => {
+    const open = D.todo.filter(x => !done[x.id]), first = open[0];
+    $('nextWhen').textContent = first ? L(first.when) : t().allDone;
+    $('nextWhat').textContent = first ? L(first.title) : t().nothingOpen;
+    $('todoPill').textContent = t().todoPill(open.length);
+    $('wsteps').innerHTML = t().steps(open.length, open.filter(x => x.kind === 'urgent').length, D.todo.length - open.length);
+    $('todoList').innerHTML = D.todo.map(x => `<li class="hp-squircle${done[x.id] ? ' done' : ''}"><input type="checkbox" id="td-${x.id}" data-id="${x.id}"${done[x.id] ? ' checked' : ''}><span class="when tag ${x.kind === 'urgent' ? 't-target' : x.kind === 'monthly' ? 't-in' : 't-wait'}">${esc(L(x.when))}</span><label for="td-${x.id}"><b>${esc(L(x.title))}</b><span>${esc(L(x.detail))}</span></label></li>`).join('');
+  };
+  $('todoList').addEventListener('change', e => {
+    const id = e.target.dataset.id; if (!id) return;
+    if (e.target.checked) done[id] = 1; else delete done[id];
+    $('wmsg').textContent = store.set('mf-done', JSON.stringify(done)) ? (e.target.checked ? t().ticked : t().unticked) : t().noSave;
+    paintTodo();
+  });
+
+  // ---------- footer ----------
+  const paintFoot = () => {
+    const f = t().foot;
+    $('fstack').innerHTML = [[f[0], short(total, 'ILS'), -8, 10], [f[1], short(liquid, 'ILS'), 5, -6], [f[2], short(G('pension').v, 'ILS'), -3, 4], [f[3], iso('$36.9K'), 7, -2], [f[4], iso('₪0'), -5, 8]]
+      .map(([l, v, r, y]) => `<span class="photo hp-squircle" style="--r:${r}deg;--y:${y}px"><span class="fig"><small>${esc(l)}</small><strong>${v}</strong></span></span>`).join('');
+    $('srcList').innerHTML = t().sources.map(s => `<p>${esc(s)}</p>`).join('');
+    $('notCounted').innerHTML = D.notCounted.map(n => `<p>${esc(L(n))}</p>`).join('');
+    $('legal1').textContent = t().legal1(fmtDate(D.asOf), FX, fmtDate(D.fx.date));
+  };
+
+  // ---------- chrome ----------
+  const groups = [...document.querySelectorAll('.group')];
+  const closeAll = except => groups.forEach(g => { if (g === except) return; g.querySelector('.pill-group').setAttribute('aria-expanded', 'false'); g.querySelector('.panel').removeAttribute('data-open'); });
+  groups.forEach(g => {
+    const b = g.querySelector('.pill-group'), p = g.querySelector('.panel');
+    b.addEventListener('click', e => { e.stopPropagation(); const open = b.getAttribute('aria-expanded') !== 'true'; closeAll(g); b.setAttribute('aria-expanded', open); open ? p.setAttribute('data-open', '') : p.removeAttribute('data-open'); });
+    p.addEventListener('click', () => closeAll());
+  });
+  document.addEventListener('click', () => closeAll());
+  const setMenu = open => { $('mmenu').hidden = !open; $('burger').setAttribute('aria-expanded', open); open ? document.documentElement.setAttribute('data-hp-menu-open', '') : document.documentElement.removeAttribute('data-hp-menu-open'); };
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeAll(); setMenu(false); } });
+  $('burger').addEventListener('click', () => setMenu($('mmenu').hidden));
+  $('mmenu').addEventListener('click', e => { if (e.target.closest('a')) setMenu(false); });
+  const onScroll = () => window.scrollY > 8 ? document.documentElement.setAttribute('data-hp-scrolled', '') : document.documentElement.removeAttribute('data-hp-scrolled');
+  addEventListener('scroll', onScroll, { passive: true }); onScroll();
+  (() => { let s = ''; const S = 72, gap = 8; for (let y = 0; y < 660; y += S + gap) for (let x = 0; x < 1440; x += S + gap) s += `<rect class="tile" x="${x}" y="${y}" width="${S}" height="${S}" rx="14"/>`; $('floor').innerHTML = s; })();
+
+  const paintAll = animate => { paintStatic(); paintTicker(); paintMenus(); paintTotal(); paintCards(); paintFilters(); paintGrid(animate); paintBiz(); paintYear(0); paintTodo(); paintFoot(); };
+  const setCur = c => { state.cur = c; store.set('mf-cur', c); paintTotal(); paintCards(); paintFilters(); paintGrid(false); paintBiz(); };
+  $('curBtn').addEventListener('click', () => setCur(state.cur === 'USD' ? 'ILS' : 'USD'));
+  $('amtBtn').addEventListener('click', () => setCur(state.cur === 'USD' ? 'ILS' : 'USD'));
+  $('lang').addEventListener('click', e => { const b = e.target.closest('[data-set-lang]'); if (!b || b.dataset.setLang === state.lang) return; state.lang = b.dataset.setLang; store.set('mf-lang', state.lang); $('wmsg').textContent = ''; paintAll(false); });
+
+  paintAll(true);
+})();
+</script>
+
+</body>
+</html>
