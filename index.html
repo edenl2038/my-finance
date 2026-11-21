@@ -250,7 +250,7 @@ button.mini:hover, button.mini:focus-visible { background: #fff; }
 /* ---------- years (carousel) ---------- */
 .tst { max-width: var(--col); margin: calc(180 * var(--u)) auto 0; position: relative; }
 .bigtitle { margin: 0 0 calc(48 * var(--u)); font: 500 calc(72 * var(--u)) / calc(80 * var(--u)) var(--f-display); letter-spacing: -.04em; }
-.tbody { display: grid; grid-template-columns: minmax(0, 1fr) calc(240 * var(--u)); gap: calc(48 * var(--u)); align-items: start; min-height: calc(220 * var(--u)); }
+.tbody { display: grid; grid-template-columns: minmax(0, 1fr) minmax(calc(240 * var(--u)), max-content); gap: calc(48 * var(--u)); align-items: start; min-height: calc(220 * var(--u)); }
 .tblk[data-phase="out"] { transform: translateX(calc(var(--dir) * 26 * var(--u))); transition: transform .22s cubic-bezier(.7,0,.84,0); }
 .tblk[data-phase="pre"] { transform: translateX(calc(var(--dir) * -26 * var(--u))); transition: none; }
 .tblk[data-phase="in"] { transform: none; transition: transform .48s var(--back); }
