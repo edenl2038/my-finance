@@ -322,6 +322,78 @@ button.mini:hover, button.mini:focus-visible { background: #fff; }
 .legal { max-width: var(--col); margin: calc(64 * var(--u)) auto 0; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font: 400 calc(12 * var(--u)) / 1.5 var(--f-sans); color: var(--foot-soft); }
 .legal span { max-width: calc(480 * var(--u)); }
 
+/* ---------- investments page (#ibkr) ---------- */
+.pill-link { height: calc(28 * var(--u)); gap: calc(6 * var(--u)); padding-inline: calc(10 * var(--u)); background: var(--pill); color: var(--ink); font-size: calc(12 * var(--u)); letter-spacing: -.01em; --hp-radius: calc(16 * var(--u)); }
+.pill-link:hover, .pill-link:focus-visible { background: var(--pill-hover); }
+.pill-link[aria-current="page"] { background: var(--ink); color: var(--pill); }
+.pill-link i { width: calc(7 * var(--u)); height: calc(7 * var(--u)); border-radius: calc(2 * var(--u)); background: var(--purple); }
+.ivback { display: inline-flex; align-items: center; gap: calc(8 * var(--u)); height: calc(32 * var(--u)); padding-inline: calc(14 * var(--u)); margin-bottom: calc(28 * var(--u)); --hp-radius: calc(16 * var(--u)); background: var(--pill); color: var(--ink); font: 500 calc(13 * var(--u)) / 1 var(--f-sans); }
+.ivback:hover, .ivback:focus-visible { background: var(--pill-hover); }
+.ivback svg { width: calc(10 * var(--u)); height: calc(10 * var(--u)); }
+:root[dir="rtl"] .ivback svg { transform: scaleX(-1); }
+.ivhero .t-eyebrow { margin-bottom: calc(18 * var(--u)); }
+.ivworth { margin-top: calc(36 * var(--u)); display: grid; justify-items: center; gap: calc(10 * var(--u)); }
+.ivworth .t-eyebrow { margin: 0; }
+.ivday { font: 500 calc(14 * var(--u)) / 1.3 var(--f-sans); color: var(--muted); font-variant-numeric: tabular-nums; }
+.ivday b { font-weight: 500; }
+.ivline { margin: calc(32 * var(--u)) 0 0; max-width: calc(720 * var(--u)); padding: calc(18 * var(--u)) calc(24 * var(--u)); --hp-radius: calc(20 * var(--u)); background: var(--note); color: var(--note-ink); font: 500 calc(20 * var(--u)) / 1.35 var(--f-display); letter-spacing: -.02em; text-wrap: balance; }
+.ivline small { display: block; margin-bottom: calc(6 * var(--u)); font: 500 calc(12 * var(--u)) / 1 var(--f-sans); letter-spacing: .04em; opacity: .7; }
+.ivsec { max-width: min(var(--col), calc(100% - 32px)); margin: calc(96 * var(--u)) auto 0; }
+.ivqs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: calc(24 * var(--u)); }
+.ivq { display: grid; gap: calc(10 * var(--u)); align-content: start; padding: calc(22 * var(--u)); background: var(--white); --hp-radius: calc(20 * var(--u)); box-shadow: 0 0 0 1px #0000000a; }
+.ivq .qq { font: 500 calc(16 * var(--u)) / 1.3 var(--f-display); color: var(--muted); letter-spacing: -.01em; }
+.ivq .price { font-size: calc(40 * var(--u)); }
+.sg-up { color: var(--good); } .sg-down { color: var(--bad); }
+.ivtog { display: flex; gap: calc(6 * var(--u)); }
+.ivperiods { display: flex; flex-wrap: wrap; gap: calc(8 * var(--u)); margin-bottom: calc(16 * var(--u)); }
+.ivper { display: inline-flex; align-items: baseline; gap: calc(6 * var(--u)); padding: calc(8 * var(--u)) calc(12 * var(--u)); --hp-radius: calc(14 * var(--u)); background: var(--pill); color: var(--muted); font: 500 calc(12 * var(--u)) / 1 var(--f-sans); }
+.ivper b { font: 500 calc(15 * var(--u)) / 1 var(--f-display); color: var(--ink); font-variant-numeric: tabular-nums; unicode-bidi: isolate; }
+.ivper b span { font-size: .7em; }
+.ivchart { position: relative; padding: calc(12 * var(--u)) calc(8 * var(--u)) calc(4 * var(--u)); background: var(--white); --hp-radius: calc(20 * var(--u)); box-shadow: 0 0 0 1px #0000000a; }
+.ivchart svg { display: block; width: 100%; height: auto; direction: ltr; touch-action: pan-y; }
+.ivchart .gl { stroke: var(--floor); stroke-width: 1; }
+.ivchart .ax { fill: var(--muted); font: 500 11px var(--f-sans); }
+.ivchart .ln { fill: none; stroke: #7b54f5; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.ivchart .cross { stroke: var(--ink); stroke-width: 1; stroke-dasharray: 3 3; }
+.ivchart .dot { fill: #7b54f5; stroke: var(--white); stroke-width: 2; }
+.ivchart .endl { fill: var(--ink); font: 500 12px var(--f-sans); }
+.ivtip { position: absolute; top: calc(10 * var(--u)); left: 0; z-index: 2; pointer-events: none; padding: 8px 10px; border-radius: 10px; background: var(--ink); color: var(--surface); font: 500 12px/1.35 var(--f-sans); white-space: nowrap; opacity: 0; transition: opacity .12s; }
+.ivtip b { display: block; font: 500 15px/1.25 var(--f-display); font-variant-numeric: tabular-nums; }
+.ivtip[data-on] { opacity: 1; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.ivbar { display: flex; gap: 2px; height: calc(28 * var(--u)); min-height: 18px; direction: ltr; margin-bottom: calc(14 * var(--u)); }
+.ivbar i { min-width: 3px; border-radius: 4px; background: var(--c); transform-origin: 50% 100%; transition: transform var(--fast) var(--soft); }
+.ivbar i:hover { transform: scaleY(1.25); transition: transform var(--hop-dur) var(--back); }
+.ivleg { justify-content: flex-start; max-width: none; }
+.ivrows { display: grid; gap: calc(12 * var(--u)); margin-top: calc(28 * var(--u)); }
+.ivrow { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, .8fr) minmax(0, .9fr) minmax(0, 1.3fr); gap: calc(10 * var(--u)) calc(24 * var(--u)); align-items: center; padding: calc(18 * var(--u)) calc(22 * var(--u)); background: var(--white); --hp-radius: calc(20 * var(--u)); box-shadow: 0 0 0 1px #0000000a; transition: transform var(--fast) var(--soft); }
+.ivrow:hover { transform: translateY(calc(-3 * var(--u))); transition: transform var(--hop-dur) var(--back); }
+.ivid { display: flex; align-items: center; gap: calc(14 * var(--u)); min-width: 0; }
+.ivtk { flex: none; display: grid; place-items: center; width: calc(56 * var(--u)); height: calc(56 * var(--u)); --hp-radius: calc(16 * var(--u)); background: color-mix(in srgb, var(--c) 14%, #fff); box-shadow: inset 0 0 0 2px var(--c); color: var(--ink); font: 600 calc(13 * var(--u)) / 1 var(--f-sans); letter-spacing: .02em; }
+.ivval, .ivgain { display: grid; gap: calc(4 * var(--u)); min-width: 0; }
+.ivval .price { font-size: calc(26 * var(--u)); }
+.ivgain b { font: 500 calc(20 * var(--u)) / 1 var(--f-display); letter-spacing: -.02em; font-variant-numeric: tabular-nums; unicode-bidi: isolate; white-space: nowrap; }
+.ivgain b span { font-size: .7em; }
+.ivgain > span { font-size: calc(13 * var(--u)); color: var(--muted); }
+.ivcmp { display: grid; gap: calc(6 * var(--u)); min-width: 0; }
+.ivm { display: grid; grid-template-columns: calc(70 * var(--u)) minmax(0, 1fr) calc(64 * var(--u)); align-items: center; gap: calc(8 * var(--u)); font-size: calc(12 * var(--u)); color: var(--muted); }
+.ivm .tr { height: calc(8 * var(--u)); min-height: 6px; background: var(--floor); border-radius: 4px; overflow: hidden; }
+.ivm .tr i { display: block; height: 100%; border-radius: 4px; background: #aaa69d; }
+.ivm.now .tr i { background: var(--c); }
+.ivm b { color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; unicode-bidi: isolate; text-align: end; }
+.ivfine { grid-column: 1 / -1; margin: 0; padding-top: calc(10 * var(--u)); border-top: 1px solid var(--rule); color: var(--muted); font-size: calc(12 * var(--u)); }
+.ivcash { margin: calc(14 * var(--u)) 0 0; color: var(--muted); font-size: calc(13 * var(--u)); }
+.ivknow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: calc(16 * var(--u)); }
+.ivknow .note { font-size: calc(20 * var(--u)); line-height: 1.2; }
+.note.white { background: var(--white); color: var(--ink); box-shadow: 0 0 0 1px #0000000a, 0 calc(13 * var(--u)) calc(20 * var(--u)) calc(-10 * var(--u)) #0000001a; }
+.ivgloss { margin-top: calc(24 * var(--u)); padding: calc(16 * var(--u)) calc(22 * var(--u)); --hp-radius: calc(20 * var(--u)); background: var(--pill); }
+.ivgloss summary { cursor: pointer; font: 500 calc(16 * var(--u)) / 1.3 var(--f-display); letter-spacing: -.01em; }
+.ivgloss dl { display: grid; gap: calc(12 * var(--u)); margin: calc(14 * var(--u)) 0 0; }
+.ivgloss dt { font-weight: 600; }
+.ivgloss dd { margin: calc(2 * var(--u)) 0 0; color: var(--muted); font-size: calc(14 * var(--u)); }
+.ivsrc { margin: calc(20 * var(--u)) 0 0; color: var(--muted); font-size: calc(12 * var(--u)); }
+.ivlink { justify-self: start; margin-top: calc(4 * var(--u)); color: var(--purple-hover); font: 500 calc(13 * var(--u)) / 1.3 var(--f-sans); text-decoration: underline; text-underline-offset: 3px; }
+
 /* ---------- keep a 16px gutter at every width ---------- */
 .feat, .tst, .wait, .fcols, .legal { max-width: min(var(--col), calc(100% - 32px)); }
 
@@ -372,6 +444,23 @@ button.mini:hover, button.mini:focus-visible { background: #fff; }
   .ftitle { font-size: 40px; line-height: 44px; padding-inline: 16px; }
   .pill-light, .footer .pill-dark { height: 32px; font-size: 13px; }
   .fcols { gap: 40px; } .fcols a, .fcols p { font-size: 15px; width: auto; } .fcols h5 { font-size: 12px; } .legal { font-size: 12px; }
+  .ivback { height: 34px; padding-inline: 14px; margin-bottom: 20px; font-size: 14px; } .ivback svg { width: 10px; height: 10px; }
+  .ivworth { margin-top: 28px; } .ivday { font-size: 14px; }
+  .ivline { margin-top: 24px; padding: 14px 16px; font-size: 17px; } .ivline small { font-size: 12px; }
+  .ivsec { margin-top: 64px; }
+  .ivqs, .ivknow { grid-template-columns: 1fr; gap: 12px; }
+  .ivq { padding: 18px; } .ivq .qq { font-size: 15px; } .ivq .price { font-size: 34px; }
+  .ivper { padding: 8px 10px; font-size: 12px; } .ivper b { font-size: 15px; }
+  .ivchart { padding: 10px 4px 2px; } .ivtip { top: 8px; }
+  .ivbar { height: 20px; }
+  .ivrow { grid-template-columns: minmax(0, 1fr) auto; gap: 12px; padding: 16px; }
+  .ivid { grid-column: 1 / -1; gap: 12px; } .ivtk { width: 48px; height: 48px; font-size: 12px; }
+  .ivval .price { font-size: 24px; } .ivgain { justify-items: end; text-align: end; } .ivgain b { font-size: 18px; } .ivgain > span { font-size: 13px; }
+  .ivcmp { grid-column: 1 / -1; gap: 6px; } .ivm { grid-template-columns: 70px minmax(0, 1fr) 64px; gap: 8px; font-size: 12px; } .ivm .tr { height: 8px; }
+  .ivfine, .ivsrc { font-size: 12px; } .ivcash { font-size: 13px; }
+  .ivknow .note { font-size: 18px; }
+  .ivgloss { padding: 14px 16px; } .ivgloss summary { font-size: 16px; } .ivgloss dd { font-size: 14px; }
+  .ivlink { font-size: 14px; }
 }
 </style>
 </head>
@@ -385,6 +474,7 @@ button.mini:hover, button.mini:focus-visible { background: #fff; }
       <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3.5" fill="#1a1a19"/><path d="M3 9.5h18" stroke="#f8f8f8" stroke-width="1.6"/><circle cx="16.5" cy="14.5" r="1.7" fill="#f8f8f8"/></svg>
     </a>
     <ul class="menus">
+      <li><a class="pill pill-link hp-squircle" href="#ibkr" data-nav-inv><i></i><span data-i18n="ivNav"></span></a></li>
       <li class="group">
         <button class="pill pill-group hp-squircle" type="button" aria-expanded="false" aria-controls="m-money" style="--hp-pill-w:64"><span data-i18n="menuMoney"></span><span class="chev hp-squircle"><svg viewBox="0 0 8 8" aria-hidden="true"><path d="M1.5 3 4 5.5 6.5 3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
         <div class="panel hp-squircle" id="m-money"></div>
@@ -406,12 +496,12 @@ button.mini:hover, button.mini:focus-visible { background: #fff; }
   </div>
 </header>
 <nav class="mmenu" id="mmenu" hidden>
-  <h4 data-i18n="menuMoney"></h4><a href="#holdings" data-i18n="navHoldings"></a><a href="#highlights" data-i18n="navHighlights"></a>
+  <h4 data-i18n="menuMoney"></h4><a href="#ibkr" data-i18n="ivNav"></a><a href="#holdings" data-i18n="navHoldings"></a><a href="#highlights" data-i18n="navHighlights"></a>
   <h4 data-i18n="menuTax"></h4><a href="#business" data-i18n="navBusiness"></a><a href="#years" data-i18n="navYears"></a><a href="#todo" data-i18n="navTodo"></a>
   <h4 data-i18n="navFiles"></h4><a href="#sources" data-i18n="navSources"></a>
 </nav>
 
-<main>
+<main id="home">
   <section class="hero" id="top" aria-labelledby="hl">
     <h1 class="headline" id="hl" data-i18n="headline"></h1>
     <p class="sub" data-i18n="sub"></p>
@@ -479,19 +569,49 @@ button.mini:hover, button.mini:focus-visible { background: #fff; }
   </section>
 </main>
 
+<main id="invest" hidden>
+  <section class="hero ivhero" aria-labelledby="ivh">
+    <a class="ivback hp-squircle" href="#top"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M8.5 5H1.5M4.5 2 1.5 5l3 3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="ivBack"></span></a>
+    <span class="t-eyebrow" data-i18n="ivEyebrow"></span>
+    <h1 class="headline" id="ivh" data-i18n="ivTitle"></h1>
+    <p class="sub" data-i18n="ivSub"></p>
+    <div class="ivworth"><span class="t-eyebrow" data-i18n="ivWorth"></span><span class="amt" id="ivAmt"></span><span class="alt" id="ivAlt"></span><span class="ivday" id="ivDay"></span></div>
+    <p class="ivline hp-squircle" id="ivLine"></p>
+  </section>
+  <section class="ivsec" aria-label="Q&amp;A"><div class="ivqs" id="ivQs"></div></section>
+  <section class="ivsec" aria-labelledby="ivct">
+    <div class="fhead"><h2 class="title" id="ivct"><span data-i18n="ivChartT"></span><span class="l2" id="ivChartSub"></span></h2><div class="ivtog" id="ivTog" role="group"></div></div>
+    <div class="ivperiods" id="ivPeriods"></div>
+    <div class="ivchart hp-squircle" id="ivChart"></div>
+  </section>
+  <section class="ivsec" aria-labelledby="ivmt">
+    <div class="fhead"><h2 class="title" id="ivmt"><span data-i18n="ivMixT"></span><span class="l2" data-i18n="ivMixS"></span></h2></div>
+    <div class="ivbar" id="ivBar" aria-hidden="true"></div>
+    <div class="legend ivleg" id="ivLeg"></div>
+    <div class="ivrows" id="ivRows"></div>
+    <p class="ivcash" id="ivCash"></p>
+  </section>
+  <section class="ivsec" aria-labelledby="ivkt">
+    <div class="fhead"><h2 class="title" id="ivkt"><span data-i18n="ivKnowT"></span><span class="l2" data-i18n="ivKnowS"></span></h2></div>
+    <div class="ivknow" id="ivKnow"></div>
+    <details class="ivgloss hp-squircle"><summary data-i18n="ivGlossT"></summary><dl id="ivGloss"></dl></details>
+    <p class="ivsrc" id="ivSrc"></p>
+  </section>
+</main>
+
 <footer class="footer" aria-labelledby="ft">
   <div class="fstack" id="fstack" aria-hidden="true"></div>
   <h2 class="ftitle" id="ft" data-i18n-html="ftitle"></h2>
   <div class="fpills"><a class="pill pill-light hp-squircle" href="#todo" data-i18n="navTodo"></a><a class="pill pill-dark hop hp-squircle" href="#top" data-i18n="backTop"></a></div>
   <div class="fcols gut" id="sources">
-    <div><h5 data-i18n="colPage"></h5><a href="#holdings" data-i18n="navHoldings"></a><a href="#business" data-i18n="navBusiness"></a><a href="#years" data-i18n="navYears"></a><a href="#todo" data-i18n="navTodo"></a></div>
+    <div><h5 data-i18n="colPage"></h5><a href="#ibkr" data-i18n="ivNav"></a><a href="#holdings" data-i18n="navHoldings"></a><a href="#business" data-i18n="navBusiness"></a><a href="#years" data-i18n="navYears"></a><a href="#todo" data-i18n="navTodo"></a></div>
     <div><h5 data-i18n="navSources"></h5><div id="srcList"></div></div>
     <div><h5 data-i18n="colNotCounted"></h5><div id="notCounted"></div></div>
   </div>
   <div class="legal gut"><span id="legal1"></span><span data-i18n="legal2"></span></div>
 </footer>
 
-<script id="fin-data" type="application/json">{"asOf":"2026-11-25","projection67":{"monthlyPension":46937,"annuitySavings":9310923,"capitalSavings":401742,"source":"Agam Leaders, 22 Nov 2026","previousMonthly":40870},"inactiveAccounts":{"count":6,"ils":272700,"itemised":"July"},"fx":{"usdIls":3.345,"date":"2026-11-24","source":"Bank of Israel representative rate"},"holdings":[{"id":"cash-ils","group":"cash","ils":25000,"liquidity":"liquid","basis":"self","asOf":"2026-11-21","institution":{"en":"Bank","he":"בנק"},"name":{"en":"Checking account","he":"חשבון עו״ש"},"detail":{"en":"Shekel current account","he":"חשבון שקלי"},"source":{"en":"Your report, 21 Nov 2026","he":"דיווח שלך, 21/11/2026"},"note":{"en":"Approximate. No bank statement in the folder yet.","he":"בקירוב. אין עדיין דף חשבון בתיקייה."}},{"id":"cash-usd","group":"cash","ils":76000,"usd":22850,"liquidity":"liquid","basis":"self","asOf":"2026-11-21","institution":{"en":"Bank","he":"בנק"},"name":{"en":"Dollar account","he":"חשבון דולרי"},"detail":{"en":"About $22,850. This is the ₪70,000 business payment.","he":"כ-22,850$. זה תשלום העסק של ₪70,000."},"source":{"en":"Your report, 21–22 Nov 2026","he":"דיווח שלך, 21–22/11/2026"},"note":{"en":"About ₪25,890 of it is owed in tax and Bituach Leumi, so keep that much here before moving any to Interactive Israel.","he":"כ-₪25,890 ממנו הם מס וביטוח לאומי, ולכן כדאי שהסכום הזה יישאר כאן לפני העברה כלשהי ל-Interactive Israel."}},{"id":"ibkr","group":"invest","usdOnly":30334.59,"liquidity":"liquid","basis":"connector","asOf":"2026-11-25","previousUsd":28061.05,"unrealizedUsd":9797.42,"cashUsd":59.91,"institution":{"en":"Interactive Israel","he":"Interactive Israel"},"name":{"en":"Stock portfolio","he":"תיק מניות"},"detail":{"en":"Unrealised gain $9,797, cash $59.91, five stocks, no margin loan","he":"רווח לא ממומש 9,797$, מזומן 59.91$, חמש מניות, בלי הלוואת מרג׳ין"},"source":{"en":"IBKR connector, 25 Nov 2026","he":"מחבר IBKR, 25/11/2026"},"note":{"en":"Up $2,274 (8.1%) from the 20 Nov screenshot. Live figures; the bar under the card shows today's holdings.","he":"עלה ב-2,274$ (8.1%) מהצילום מ-20/11. נתונים חיים; הפס מתחת לכרטיס מראה את ההחזקות של היום."}},{"id":"phoenix","group":"invest","ils":161975,"liquidity":"liquid","basis":"screenshot","asOf":"2026-11-22","ret12":6.87,"institution":{"en":"The Phoenix","he":"הפניקס"},"name":{"en":"Investment provident fund","he":"קופת גמל להשקעה"},"detail":{"en":"Active since May 2024. Up ₪14,280 since July.","he":"פעילה ממאי 2024. עלתה ב-₪14,280 מאז יולי."},"source":{"en":"Agam Leaders, 22 Nov 2026","he":"אגם לידרס, 22/11/2026"},"note":{"en":"Can be withdrawn any time; gains are taxed on withdrawal.","he":"אפשר למשוך בכל עת; על הרווחים משלמים מס במשיכה."}},{"id":"yelin-study","group":"savings","ils":226982,"accounts":5,"liquidity":"terms","basis":"screenshot","asOf":"2026-11-22","ret12":17.5,"institution":{"en":"Yelin Lapidot","he":"ילין לפידות"},"name":{"en":"Study funds (5)","he":"קרנות השתלמות (5)"},"detail":{"en":"One active, four inactive in the July breakdown","he":"אחת פעילה וארבע לא פעילות, לפי הפירוט מיולי"},"source":{"en":"Agam Leaders, 22 Nov 2026","he":"אגם לידרס, 22/11/2026"},"note":{"en":"Mixtiles adds 7.5% of salary to the active one. Up ₪6,623 since July.","he":"מיקסטיילז מפקידה 7.5% מהשכר לקרן הפעילה. עלו ב-₪6,623 מאז יולי."}},{"id":"yelin-gemel","group":"savings","ils":103312,"accounts":2,"flag":true,"liquidity":"terms","basis":"screenshot","asOf":"2026-11-22","ret12":17.39,"institution":{"en":"Yelin Lapidot","he":"ילין לפידות"},"name":{"en":"Provident funds (2)","he":"קופות גמל (2)"},"detail":{"en":"Both inactive in the July breakdown","he":"שתיהן לא פעילות, לפי הפירוט מיולי"},"source":{"en":"Agam Leaders, 22 Nov 2026","he":"אגם לידרס, 22/11/2026"},"note":{"en":"Nobody deposits into these any more. Up ₪820 since July.","he":"אף אחד כבר לא מפקיד אליהן. עלו ב-₪820 מאז יולי."}},{"id":"migdal","group":"pension","ils":382948,"accounts":2,"liquidity":"retire","basis":"screenshot","asOf":"2026-11-22","ret12":7.74,"institution":{"en":"Migdal","he":"מגדל"},"name":{"en":"Pension funds (2)","he":"קרנות פנסיה (2)"},"detail":{"en":"Comprehensive and general fund. Up ₪29,900 since July.","he":"מקיפה וכללית. עלו ב-₪29,900 מאז יולי."},"source":{"en":"Agam Leaders, 22 Nov 2026","he":"אגם לידרס, 22/11/2026"},"note":{"en":"Agam Leaders projects ₪46,937 a month at 67 if deposits continue.","he":"באגם לידרס: קצבה צפויה של ₪46,937 לחודש בגיל 67 אם ההפקדות יימשכו."}},{"id":"loan-mom","group":"family","ils":30000,"liquidity":"owed","basis":"self","asOf":"2026-11-21","institution":{"en":"Family","he":"משפחה"},"name":{"en":"Loan to Mom","he":"הלוואה לאמא"},"detail":{"en":"Money she owes you","he":"כסף שהיא חייבת לך"},"source":{"en":"Your report","he":"דיווח שלך"},"note":{"en":"No repayment date agreed yet.","he":"עוד לא סוכם מועד החזר."}},{"id":"loan-brother","group":"family","ils":30000,"liquidity":"owed","basis":"self","asOf":"2026-11-21","institution":{"en":"Family","he":"משפחה"},"name":{"en":"Loan to your brother","he":"הלוואה לאח"},"detail":{"en":"Money he owes you","he":"כסף שהוא חייב לך"},"source":{"en":"Your report","he":"דיווח שלך"},"note":{"en":"No repayment date agreed yet.","he":"עוד לא סוכם מועד החזר."}}],"positions":[{"ticker":"NVDA","usd":14054.3},{"ticker":"AAPL","usd":6343.92},{"ticker":"TSLA","usd":5618.1},{"ticker":"TTWO","usd":4134.21},{"ticker":"MNDY","usd":150.2},{"ticker":"Cash","usd":59.91}],"positionsTotalUsd":30360.64,"returns12m":{"overall":11.4,"pension":9.91,"financial":13.23},"salary":{"employer":"Mixtiles","since":"2024-04-14","baseMonthly":31000,"julyNet":20672.3,"julyGross":38638.17,"marginalRate":35,"ytd2026":{"gross":274631,"incomeTax":62800,"nationalInsurance":16011,"health":13149,"through":"July"}},"years":[{"year":2023,"stat":243215,"label":{"en":"Tax Authority summary","he":"סיכום רשות המסים"},"statLabel":{"en":"Gross salary","he":"שכר ברוטו"},"text":{"en":"One employer, Artlist. ₪243,215 in salary and ₪35,405 of income tax taken at source.","he":"מעסיק אחד, ארטליסט. ₪243,215 שכר ו-₪35,405 מס הכנסה שנוכה במקור."}},{"year":2024,"stat":401034,"label":{"en":"Tax assessment","he":"שומת מס"},"statLabel":{"en":"Total income","he":"סך ההכנסות"},"text":{"en":"Three employers including Artlist and Mixtiles paid ₪391,934, and the business added ₪9,100. The return left ₪10,400 to pay. ₪10,746 went to the Tax Authority on 15 Jul 2026, so this year looks closed.","he":"שלושה מעסיקים, ביניהם ארטליסט ומיקסטיילז, שילמו ₪391,934, והעסק הוסיף ₪9,100. מהדוח נותרו ₪10,400 לתשלום. ב-15/07/2026 שולמו ₪10,746 לרשות המסים, כך שהשנה נראית סגורה."}},{"year":2025,"stat":382433,"label":{"en":"Form 106 + small-business report","he":"טופס 106 + דיווח עסק זעיר"},"statLabel":{"en":"Gross salary","he":"שכר ברוטו"},"text":{"en":"A full year at Mixtiles. After income tax, Bituach Leumi, health tax and your pension share, about ₪237,300 reached you, around ₪19,800 a month. The business brought ₪25,000, and its ₪4,615 tax balance was paid on 25 Aug 2026.","he":"שנה מלאה במיקסטיילז. אחרי מס הכנסה, ביטוח לאומי, מס בריאות וחלקך בפנסיה, הגיעו אליך כ-₪237,300, בערך ₪19,800 בחודש. העסק הכניס ₪25,000, ויתרת המס שלו, ₪4,615, שולמה ב-25/08/2026."}},{"year":2026,"stat":274631,"label":{"en":"July payslip, year to date","he":"תלוש יולי, מתחילת השנה"},"statLabel":{"en":"Gross, Jan to Jul","he":"ברוטו, ינואר עד יולי"},"text":{"en":"₪274,631 gross through July with ₪62,800 income tax withheld. July take-home was ₪20,672 on a ₪31,000 base salary, at a 35% marginal rate. The business brought in ₪70,000 gross, paid into the dollar account.","he":"₪274,631 ברוטו עד יולי, ו-₪62,800 מס הכנסה נוכה. הנטו ביולי היה ₪20,672 על שכר בסיס של ₪31,000, במדרגת מס שולית של 35%. העסק הכניס ₪70,000 ברוטו, שנכנסו לחשבון הדולרי."}}],"business":{"ceiling":120000,"expectedGross":70000,"received":true,"receivedInto":"cash-usd","income2025":25000,"reserve":{"deductionPct":30,"taxable":49000,"incomeTax":17150,"niHealth":8740,"total":25890,"net":44110,"assumptions":{"en":"Assumes the 30% small-business expense deduction, a 35% marginal bracket and the full self-employed Bituach Leumi and health rate of about 17.8%.","he":"מניח ניכוי הוצאות של 30% לעסק זעיר, מדרגת מס שולית של 35% ושיעור מלא של ביטוח לאומי ובריאות לעצמאי, כ-17.8%."}}},"todo":[{"id":"coord","kind":"urgent","when":{"en":"By 31 Dec","he":"עד 31/12"},"title":{"en":"Confirm your 2026 online tax coordination","he":"לוודא שבוצע תיאום מס מקוון ל-2026"},"detail":{"en":"It is one of the four conditions for keeping the small-business file, from the Tax Authority letter of 23 Dec 2025.","he":"זה אחד מארבעת התנאים להמשך הסיווג כעסק זעיר, לפי מכתב רשות המסים מ-23/12/2025."}},{"id":"receipt","kind":"urgent","when":{"en":"Now","he":"עכשיו"},"title":{"en":"Issue a receipt for the ₪70,000, without VAT","he":"להוציא קבלה על ה-₪70,000, בלי מע״מ"},"detail":{"en":"Skip this if it's done. As an exempt dealer you issue a receipt when the money arrives. Note the shekel value on the day the dollars came in: that is the 2026 income figure.","he":"אם כבר יצאה, אפשר לדלג. כעוסק פטור מוציאים קבלה כשהכסף מתקבל. לרשום את השווי בשקלים ביום שהדולרים נכנסו: זה סכום ההכנסה ל-2026."}},{"id":"reserve","kind":"urgent","when":{"en":"Now","he":"עכשיו"},"title":{"en":"Keep about ₪26,000 of the dollar account for tax","he":"להשאיר כ-₪26,000 מהחשבון הדולרי למס"},"detail":{"en":"Rough estimate for income tax and Bituach Leumi on the ₪70,000. Leave it out of any transfer to Interactive Israel. About ₪44,000 is yours to keep.","he":"הערכה גסה למס הכנסה ולביטוח לאומי על ה-₪70,000. לא לכלול אותו בהעברה ל-Interactive Israel. כ-₪44,000 נשארים אצלך."}},{"id":"ceiling","kind":"normal","when":{"en":"This month","he":"החודש"},"title":{"en":"Check 2026 business income stays under ₪120,000","he":"לבדוק שהכנסות העסק ב-2026 נשארות מתחת ל-₪120,000"},"detail":{"en":"Both the small-business and exempt-dealer tracks depend on it. The figure is from the 2025 letter, so confirm it for 2026.","he":"גם מסלול עסק זעיר וגם עוסק פטור תלויים בזה. הסכום לקוח ממכתב 2025, ולכן צריך לאמת אותו ל-2026."}},{"id":"bl","kind":"normal","when":{"en":"This month","he":"החודש"},"title":{"en":"Confirm your Bituach Leumi status as self-employed","he":"לבדוק את המעמד בביטוח לאומי כעצמאי"},"detail":{"en":"The business payment has arrived, and none of the documents show self-employed contributions being paid on it.","he":"התשלום מהעסק כבר התקבל, ואף מסמך לא מראה תשלומי ביטוח לאומי כעצמאי עליו."}},{"id":"statement","kind":"normal","when":{"en":"Anytime","he":"בכל עת"},"title":{"en":"Download a Tax Authority account statement","he":"להוריד מצב חשבון מרשות המסים"},"detail":{"en":"To confirm 2024 and 2025 are fully closed after the payments of 15 Jul and 25 Aug.","he":"כדי לוודא ש-2024 ו-2025 סגורות לגמרי אחרי התשלומים מ-15/07 ומ-25/08."}},{"id":"inactive","kind":"normal","when":{"en":"Anytime","he":"בכל עת"},"title":{"en":"Ask Yelin Lapidot about the 6 inactive accounts","he":"לברר בילין לפידות על 6 החשבונות הלא פעילים"},"detail":{"en":"₪272,700 sat in accounts nobody pays into when last itemised in July. Ask what fees each charges and whether they can be merged.","he":"₪272,700 ישבו בחשבונות שאף אחד לא מפקיד אליהם, לפי הפירוט האחרון מיולי. לברר כמה דמי ניהול גובה כל אחד ואם אפשר לאחד אותם."}},{"id":"loans","kind":"normal","when":{"en":"Anytime","he":"בכל עת"},"title":{"en":"Write down the family loans with repayment dates","he":"לתעד בכתב את ההלוואות למשפחה עם מועדי החזר"},"detail":{"en":"₪60,000 owed by Mom and your brother, with no dates agreed.","he":"₪60,000 שאמא והאח חייבים, בלי מועד מוסכם."}},{"id":"refresh","kind":"monthly","when":{"en":"Monthly","he":"כל חודש"},"title":{"en":"Send fresh balances","he":"לשלוח יתרות עדכניות"},"detail":{"en":"Bank and dollar account are from what you told me; IBKR now comes live from the connector.","he":"העו״ש והחשבון הדולרי מבוססים על מה שסיפרת; IBKR מגיע עכשיו ישירות מהמחבר."}},{"id":"spend","kind":"normal","when":{"en":"Anytime","he":"בכל עת"},"title":{"en":"Track one month of spending","he":"לעקוב אחרי ההוצאות במשך חודש אחד"},"detail":{"en":"It is the missing number for your savings rate and long-range plans.","he":"זה המספר שחסר כדי לחשב שיעור חיסכון ולתכנן לטווח ארוך."}}],"notCounted":[{"en":"ETH held in 2023: no current balance","he":"ETH שהוחזק ב-2023: אין יתרה עדכנית"},{"en":"Credit card charges not yet billed","he":"חיובי אשראי שעוד לא ירדו"}],"liabilities":[{"id":"biz-tax-2026","ils":25890,"estimate":true,"name":{"en":"Estimated tax and Bituach Leumi on the 2026 business income","he":"הערכת מס וביטוח לאומי על הכנסות העסק ב-2026"}}]}</script>
+<script id="fin-data" type="application/json">{"asOf":"2026-11-25","projection67":{"monthlyPension":46937,"annuitySavings":9310923,"capitalSavings":401742,"source":"Agam Leaders, 22 Nov 2026","previousMonthly":40870},"inactiveAccounts":{"count":6,"ils":272700,"itemised":"July"},"fx":{"usdIls":3.345,"date":"2026-11-24","source":"Bank of Israel representative rate"},"holdings":[{"id":"cash-ils","group":"cash","ils":25000,"liquidity":"liquid","basis":"self","asOf":"2026-11-21","institution":{"en":"Bank","he":"בנק"},"name":{"en":"Checking account","he":"חשבון עו״ש"},"detail":{"en":"Shekel current account","he":"חשבון שקלי"},"source":{"en":"Your report, 21 Nov 2026","he":"דיווח שלך, 21/11/2026"},"note":{"en":"Approximate. No bank statement in the folder yet.","he":"בקירוב. אין עדיין דף חשבון בתיקייה."}},{"id":"cash-usd","group":"cash","ils":76000,"usd":22850,"liquidity":"liquid","basis":"self","asOf":"2026-11-21","institution":{"en":"Bank","he":"בנק"},"name":{"en":"Dollar account","he":"חשבון דולרי"},"detail":{"en":"About $22,850. This is the ₪70,000 business payment.","he":"כ-22,850$. זה תשלום העסק של ₪70,000."},"source":{"en":"Your report, 21–22 Nov 2026","he":"דיווח שלך, 21–22/11/2026"},"note":{"en":"About ₪25,890 of it is owed in tax and Bituach Leumi, so keep that much here before moving any to Interactive Israel.","he":"כ-₪25,890 ממנו הם מס וביטוח לאומי, ולכן כדאי שהסכום הזה יישאר כאן לפני העברה כלשהי ל-Interactive Israel."}},{"id":"ibkr","group":"invest","usdOnly":30337.58,"liquidity":"liquid","basis":"connector","asOf":"2026-11-25","previousUsd":28061.05,"unrealizedUsd":9806.11,"cashUsd":59.91,"institution":{"en":"Interactive Israel","he":"Interactive Israel"},"name":{"en":"Stock portfolio","he":"תיק מניות"},"detail":{"en":"Unrealised gain $9,806, cash $59.91, five stocks, no margin loan","he":"רווח לא ממומש 9,806$, מזומן 59.91$, חמש מניות, בלי הלוואת מרג׳ין"},"source":{"en":"IBKR connector, 25 Nov 2026","he":"מחבר IBKR, 25/11/2026"},"note":{"en":"Up $2,277 (8.1%) from the 20 Nov screenshot. Live figures; open the investments page for the full picture.","he":"עלה ב-2,277$ (8.1%) מהצילום מ-20/11. נתונים חיים; בעמוד ההשקעות יש את התמונה המלאה."}},{"id":"phoenix","group":"invest","ils":161975,"liquidity":"liquid","basis":"screenshot","asOf":"2026-11-22","ret12":6.87,"institution":{"en":"The Phoenix","he":"הפניקס"},"name":{"en":"Investment provident fund","he":"קופת גמל להשקעה"},"detail":{"en":"Active since May 2024. Up ₪14,280 since July.","he":"פעילה ממאי 2024. עלתה ב-₪14,280 מאז יולי."},"source":{"en":"Agam Leaders, 22 Nov 2026","he":"אגם לידרס, 22/11/2026"},"note":{"en":"Can be withdrawn any time; gains are taxed on withdrawal.","he":"אפשר למשוך בכל עת; על הרווחים משלמים מס במשיכה."}},{"id":"yelin-study","group":"savings","ils":226982,"accounts":5,"liquidity":"terms","basis":"screenshot","asOf":"2026-11-22","ret12":17.5,"institution":{"en":"Yelin Lapidot","he":"ילין לפידות"},"name":{"en":"Study funds (5)","he":"קרנות השתלמות (5)"},"detail":{"en":"One active, four inactive in the July breakdown","he":"אחת פעילה וארבע לא פעילות, לפי הפירוט מיולי"},"source":{"en":"Agam Leaders, 22 Nov 2026","he":"אגם לידרס, 22/11/2026"},"note":{"en":"Mixtiles adds 7.5% of salary to the active one. Up ₪6,623 since July.","he":"מיקסטיילז מפקידה 7.5% מהשכר לקרן הפעילה. עלו ב-₪6,623 מאז יולי."}},{"id":"yelin-gemel","group":"savings","ils":103312,"accounts":2,"flag":true,"liquidity":"terms","basis":"screenshot","asOf":"2026-11-22","ret12":17.39,"institution":{"en":"Yelin Lapidot","he":"ילין לפידות"},"name":{"en":"Provident funds (2)","he":"קופות גמל (2)"},"detail":{"en":"Both inactive in the July breakdown","he":"שתיהן לא פעילות, לפי הפירוט מיולי"},"source":{"en":"Agam Leaders, 22 Nov 2026","he":"אגם לידרס, 22/11/2026"},"note":{"en":"Nobody deposits into these any more. Up ₪820 since July.","he":"אף אחד כבר לא מפקיד אליהן. עלו ב-₪820 מאז יולי."}},{"id":"migdal","group":"pension","ils":382948,"accounts":2,"liquidity":"retire","basis":"screenshot","asOf":"2026-11-22","ret12":7.74,"institution":{"en":"Migdal","he":"מגדל"},"name":{"en":"Pension funds (2)","he":"קרנות פנסיה (2)"},"detail":{"en":"Comprehensive and general fund. Up ₪29,900 since July.","he":"מקיפה וכללית. עלו ב-₪29,900 מאז יולי."},"source":{"en":"Agam Leaders, 22 Nov 2026","he":"אגם לידרס, 22/11/2026"},"note":{"en":"Agam Leaders projects ₪46,937 a month at 67 if deposits continue.","he":"באגם לידרס: קצבה צפויה של ₪46,937 לחודש בגיל 67 אם ההפקדות יימשכו."}},{"id":"loan-mom","group":"family","ils":30000,"liquidity":"owed","basis":"self","asOf":"2026-11-21","institution":{"en":"Family","he":"משפחה"},"name":{"en":"Loan to Mom","he":"הלוואה לאמא"},"detail":{"en":"Money she owes you","he":"כסף שהיא חייבת לך"},"source":{"en":"Your report","he":"דיווח שלך"},"note":{"en":"No repayment date agreed yet.","he":"עוד לא סוכם מועד החזר."}},{"id":"loan-brother","group":"family","ils":30000,"liquidity":"owed","basis":"self","asOf":"2026-11-21","institution":{"en":"Family","he":"משפחה"},"name":{"en":"Loan to your brother","he":"הלוואה לאח"},"detail":{"en":"Money he owes you","he":"כסף שהוא חייב לך"},"source":{"en":"Your report","he":"דיווח שלך"},"note":{"en":"No repayment date agreed yet.","he":"עוד לא סוכם מועד החזר."}}],"positions":[{"ticker":"NVDA","usd":14055.25,"qty":95,"price":147.95,"avgCost":84.28,"costUsd":8006.15,"unrealizedUsd":6049.1,"dayUsd":-705.85,"name":{"en":"NVIDIA","he":"אנבידיה"},"what":{"en":"Chips for AI and graphics","he":"שבבים לבינה מלאכותית וגרפיקה"}},{"ticker":"AAPL","usd":6332.4,"qty":18,"price":351.8,"avgCost":179.47,"costUsd":3230.44,"unrealizedUsd":3101.96,"dayUsd":-40.86,"name":{"en":"Apple","he":"אפל"},"what":{"en":"iPhone, Mac and services","he":"אייפון, מק ושירותים"}},{"ticker":"TSLA","usd":5614.8,"qty":15,"price":374.32,"avgCost":406.28,"costUsd":6094.14,"unrealizedUsd":-479.34,"dayUsd":-155.4,"name":{"en":"Tesla","he":"טסלה"},"what":{"en":"Electric cars and batteries","he":"רכבים חשמליים וסוללות"}},{"ticker":"TTWO","usd":4132.5,"qty":19,"price":217.5,"avgCost":146.58,"costUsd":2785.03,"unrealizedUsd":1347.47,"dayUsd":-55.29,"name":{"en":"Take-Two","he":"טייק-טו"},"what":{"en":"Video games (GTA, NBA 2K)","he":"משחקי וידאו (GTA, NBA 2K)"}},{"ticker":"MNDY","usd":148.42,"qty":2,"price":74.21,"avgCost":180.75,"costUsd":361.5,"unrealizedUsd":-213.08,"dayUsd":-1.78,"name":{"en":"monday.com","he":"מאנדיי.קום"},"what":{"en":"Work-management software","he":"תוכנה לניהול עבודה"}},{"ticker":"Cash","usd":59.91,"name":{"en":"Cash","he":"מזומן"},"what":{"en":"Dollars in the account, not invested","he":"דולרים בחשבון שלא הושקעו"}}],"positionsTotalUsd":30343.28,"ibkrPerf":{"asOf":"2026-11-25","measure":"TWR","source":{"en":"IBKR connector, account performance (time-weighted)","he":"מחבר IBKR, ביצועי החשבון (תשואה משוקללת זמן)"},"returns":{"1D":-0.0304,"7D":-0.0134,"MTD":-0.1451,"1M":-0.1574,"YTD":-0.1209,"1Y":-0.0917},"year":[["2025-11-24",33416.75],["2025-11-28",33258.34],["2025-12-31",34525.62],["2026-01-30",33708.49],["2026-02-27",31802.0],["2026-03-31",30616.56],["2026-04-30",33774.45],["2026-05-29",36655.52],["2026-06-30",35455.25],["2026-07-31",34124.38],["2026-08-31",36611.69],["2026-09-30",37168.3],["2026-10-30",35501.99],["2026-11-25",30351.83]],"month":[["2026-10-23",36022.99],["2026-10-26",36712.14],["2026-10-27",37143.82],["2026-10-28",36675.76],["2026-10-29",36547.82],["2026-10-30",35501.99],["2026-11-02",35239.45],["2026-11-03",35535.51],["2026-11-04",35300.35],["2026-11-05",32900.2],["2026-11-06",33581.42],["2026-11-09",33113.55],["2026-11-10",32491.62],["2026-11-11",33374.73],["2026-11-12",32663.68],["2026-11-13",32281.4],["2026-11-16",31155.38],["2026-11-17",30888.31],["2026-11-18",30764.68],["2026-11-19",29934.09],["2026-11-20",27472.96],["2026-11-23",31930.82],["2026-11-24",31302.46],["2026-11-25",30351.83]]},"returns12m":{"overall":11.4,"pension":9.91,"financial":13.23},"salary":{"employer":"Mixtiles","since":"2024-04-14","baseMonthly":31000,"julyNet":20672.3,"julyGross":38638.17,"marginalRate":35,"ytd2026":{"gross":274631,"incomeTax":62800,"nationalInsurance":16011,"health":13149,"through":"July"}},"years":[{"year":2023,"stat":243215,"label":{"en":"Tax Authority summary","he":"סיכום רשות המסים"},"statLabel":{"en":"Gross salary","he":"שכר ברוטו"},"text":{"en":"One employer, Artlist. ₪243,215 in salary and ₪35,405 of income tax taken at source.","he":"מעסיק אחד, ארטליסט. ₪243,215 שכר ו-₪35,405 מס הכנסה שנוכה במקור."}},{"year":2024,"stat":401034,"label":{"en":"Tax assessment","he":"שומת מס"},"statLabel":{"en":"Total income","he":"סך ההכנסות"},"text":{"en":"Three employers including Artlist and Mixtiles paid ₪391,934, and the business added ₪9,100. The return left ₪10,400 to pay. ₪10,746 went to the Tax Authority on 15 Jul 2026, so this year looks closed.","he":"שלושה מעסיקים, ביניהם ארטליסט ומיקסטיילז, שילמו ₪391,934, והעסק הוסיף ₪9,100. מהדוח נותרו ₪10,400 לתשלום. ב-15/07/2026 שולמו ₪10,746 לרשות המסים, כך שהשנה נראית סגורה."}},{"year":2025,"stat":382433,"label":{"en":"Form 106 + small-business report","he":"טופס 106 + דיווח עסק זעיר"},"statLabel":{"en":"Gross salary","he":"שכר ברוטו"},"text":{"en":"A full year at Mixtiles. After income tax, Bituach Leumi, health tax and your pension share, about ₪237,300 reached you, around ₪19,800 a month. The business brought ₪25,000, and its ₪4,615 tax balance was paid on 25 Aug 2026.","he":"שנה מלאה במיקסטיילז. אחרי מס הכנסה, ביטוח לאומי, מס בריאות וחלקך בפנסיה, הגיעו אליך כ-₪237,300, בערך ₪19,800 בחודש. העסק הכניס ₪25,000, ויתרת המס שלו, ₪4,615, שולמה ב-25/08/2026."}},{"year":2026,"stat":274631,"label":{"en":"July payslip, year to date","he":"תלוש יולי, מתחילת השנה"},"statLabel":{"en":"Gross, Jan to Jul","he":"ברוטו, ינואר עד יולי"},"text":{"en":"₪274,631 gross through July with ₪62,800 income tax withheld. July take-home was ₪20,672 on a ₪31,000 base salary, at a 35% marginal rate. The business brought in ₪70,000 gross, paid into the dollar account.","he":"₪274,631 ברוטו עד יולי, ו-₪62,800 מס הכנסה נוכה. הנטו ביולי היה ₪20,672 על שכר בסיס של ₪31,000, במדרגת מס שולית של 35%. העסק הכניס ₪70,000 ברוטו, שנכנסו לחשבון הדולרי."}}],"business":{"ceiling":120000,"expectedGross":70000,"received":true,"receivedInto":"cash-usd","income2025":25000,"reserve":{"deductionPct":30,"taxable":49000,"incomeTax":17150,"niHealth":8740,"total":25890,"net":44110,"assumptions":{"en":"Assumes the 30% small-business expense deduction, a 35% marginal bracket and the full self-employed Bituach Leumi and health rate of about 17.8%.","he":"מניח ניכוי הוצאות של 30% לעסק זעיר, מדרגת מס שולית של 35% ושיעור מלא של ביטוח לאומי ובריאות לעצמאי, כ-17.8%."}}},"todo":[{"id":"coord","kind":"urgent","when":{"en":"By 31 Dec","he":"עד 31/12"},"title":{"en":"Confirm your 2026 online tax coordination","he":"לוודא שבוצע תיאום מס מקוון ל-2026"},"detail":{"en":"It is one of the four conditions for keeping the small-business file, from the Tax Authority letter of 23 Dec 2025.","he":"זה אחד מארבעת התנאים להמשך הסיווג כעסק זעיר, לפי מכתב רשות המסים מ-23/12/2025."}},{"id":"receipt","kind":"urgent","when":{"en":"Now","he":"עכשיו"},"title":{"en":"Issue a receipt for the ₪70,000, without VAT","he":"להוציא קבלה על ה-₪70,000, בלי מע״מ"},"detail":{"en":"Skip this if it's done. As an exempt dealer you issue a receipt when the money arrives. Note the shekel value on the day the dollars came in: that is the 2026 income figure.","he":"אם כבר יצאה, אפשר לדלג. כעוסק פטור מוציאים קבלה כשהכסף מתקבל. לרשום את השווי בשקלים ביום שהדולרים נכנסו: זה סכום ההכנסה ל-2026."}},{"id":"reserve","kind":"urgent","when":{"en":"Now","he":"עכשיו"},"title":{"en":"Keep about ₪26,000 of the dollar account for tax","he":"להשאיר כ-₪26,000 מהחשבון הדולרי למס"},"detail":{"en":"Rough estimate for income tax and Bituach Leumi on the ₪70,000. Leave it out of any transfer to Interactive Israel. About ₪44,000 is yours to keep.","he":"הערכה גסה למס הכנסה ולביטוח לאומי על ה-₪70,000. לא לכלול אותו בהעברה ל-Interactive Israel. כ-₪44,000 נשארים אצלך."}},{"id":"ceiling","kind":"normal","when":{"en":"This month","he":"החודש"},"title":{"en":"Check 2026 business income stays under ₪120,000","he":"לבדוק שהכנסות העסק ב-2026 נשארות מתחת ל-₪120,000"},"detail":{"en":"Both the small-business and exempt-dealer tracks depend on it. The figure is from the 2025 letter, so confirm it for 2026.","he":"גם מסלול עסק זעיר וגם עוסק פטור תלויים בזה. הסכום לקוח ממכתב 2025, ולכן צריך לאמת אותו ל-2026."}},{"id":"bl","kind":"normal","when":{"en":"This month","he":"החודש"},"title":{"en":"Confirm your Bituach Leumi status as self-employed","he":"לבדוק את המעמד בביטוח לאומי כעצמאי"},"detail":{"en":"The business payment has arrived, and none of the documents show self-employed contributions being paid on it.","he":"התשלום מהעסק כבר התקבל, ואף מסמך לא מראה תשלומי ביטוח לאומי כעצמאי עליו."}},{"id":"statement","kind":"normal","when":{"en":"Anytime","he":"בכל עת"},"title":{"en":"Download a Tax Authority account statement","he":"להוריד מצב חשבון מרשות המסים"},"detail":{"en":"To confirm 2024 and 2025 are fully closed after the payments of 15 Jul and 25 Aug.","he":"כדי לוודא ש-2024 ו-2025 סגורות לגמרי אחרי התשלומים מ-15/07 ומ-25/08."}},{"id":"inactive","kind":"normal","when":{"en":"Anytime","he":"בכל עת"},"title":{"en":"Ask Yelin Lapidot about the 6 inactive accounts","he":"לברר בילין לפידות על 6 החשבונות הלא פעילים"},"detail":{"en":"₪272,700 sat in accounts nobody pays into when last itemised in July. Ask what fees each charges and whether they can be merged.","he":"₪272,700 ישבו בחשבונות שאף אחד לא מפקיד אליהם, לפי הפירוט האחרון מיולי. לברר כמה דמי ניהול גובה כל אחד ואם אפשר לאחד אותם."}},{"id":"loans","kind":"normal","when":{"en":"Anytime","he":"בכל עת"},"title":{"en":"Write down the family loans with repayment dates","he":"לתעד בכתב את ההלוואות למשפחה עם מועדי החזר"},"detail":{"en":"₪60,000 owed by Mom and your brother, with no dates agreed.","he":"₪60,000 שאמא והאח חייבים, בלי מועד מוסכם."}},{"id":"refresh","kind":"monthly","when":{"en":"Monthly","he":"כל חודש"},"title":{"en":"Send fresh balances","he":"לשלוח יתרות עדכניות"},"detail":{"en":"Bank and dollar account are from what you told me; IBKR now comes live from the connector.","he":"העו״ש והחשבון הדולרי מבוססים על מה שסיפרת; IBKR מגיע עכשיו ישירות מהמחבר."}},{"id":"spend","kind":"normal","when":{"en":"Anytime","he":"בכל עת"},"title":{"en":"Track one month of spending","he":"לעקוב אחרי ההוצאות במשך חודש אחד"},"detail":{"en":"It is the missing number for your savings rate and long-range plans.","he":"זה המספר שחסר כדי לחשב שיעור חיסכון ולתכנן לטווח ארוך."}}],"notCounted":[{"en":"ETH held in 2023: no current balance","he":"ETH שהוחזק ב-2023: אין יתרה עדכנית"},{"en":"Credit card charges not yet billed","he":"חיובי אשראי שעוד לא ירדו"}],"liabilities":[{"id":"biz-tax-2026","ils":25890,"estimate":true,"name":{"en":"Estimated tax and Bituach Leumi on the 2026 business income","he":"הערכת מס וביטוח לאומי על הכנסות העסק ב-2026"}}]}</script>
 <script>
 (() => {
   const D = JSON.parse(document.getElementById('fin-data').textContent);
@@ -533,7 +653,7 @@ button.mini:hover, button.mini:focus-visible { background: #fff; }
       legal2: 'Indicative figures for your own planning. Not an official statement, a balance confirmation or investment advice.',
       asOfPill: d => `As of ${d}`,
       tick: { net: 'Net worth', liquid: 'Liquid', pension: 'Pension', savings: 'Study & provident', fx: 'USD/ILS', incoming: 'Business 2026', incomingV: '₪70,000 received', next: 'Next deadline', nextV: '31 Dec, tax coordination', july: 'July take-home', debts: 'Loans', p67: 'Pension at 67', p67v: ' a month' },
-      menuMoneyItems: [['Cash', 'Checking and dollar accounts'], ['Investments', 'Interactive Israel and the Phoenix fund'], ['Study & provident', 'Seven Yelin Lapidot accounts'], ['Pension', 'Two Migdal funds'], ['Owed by family', 'Mom and your brother'], ['Highlights', 'The numbers that matter today']],
+      menuMoneyItems: [['Cash', 'Checking and dollar accounts'], ['Investments', 'Your Interactive Israel account, in plain words'], ['Study & provident', 'Seven Yelin Lapidot accounts'], ['Pension', 'Two Migdal funds'], ['Owed by family', 'Mom and your brother'], ['Highlights', 'The numbers that matter today']],
       menuTaxItems: [['The business', 'The ₪70,000 and what to keep aside'], ['Year by year', 'Income and tax, 2023 to 2026'], ['To-do', 'Deadlines and open questions'], ['Sources', 'Which file each number came from']],
       logos: ['Migdal', 'Yelin Lapidot', 'The Phoenix', 'Interactive Israel', 'Mixtiles', 'Israel Tax Authority', 'Bituach Leumi', 'Bank of Israel'],
       cards: {
@@ -545,7 +665,32 @@ button.mini:hover, button.mini:focus-visible { background: #fff; }
         inactive: [n => `${n} inactive accounts`, v => `At Yelin Lapidot, nobody pays into them. ${v} when last itemised in July.`],
         debts: ['Loans', 'No loans. 2024 and 2025 tax paid.', 'per the payment emails']
       },
-      foot: ['Net worth', 'Liquid', 'Pension', 'IBKR', 'Loans']
+      foot: ['Net worth', 'Liquid', 'Pension', 'IBKR', 'Loans'],
+      ivNav: 'Investments', ivOpen: 'Open the investments page', ivBack: 'Back to the overview', ivEyebrow: 'Interactive Israel · stock portfolio', ivTitle: 'My investments.',
+      ivSub: 'One page, plain words: what the account is worth, what went into it, and what each stock is doing.',
+      ivWorth: 'The account is worth', ivChartT: 'How the value moved', ivMixT: "What's inside", ivMixS: 'Each stock, what it is worth and what was paid for it', ivKnowT: 'Worth knowing', ivKnowS: 'Facts about the account, not recommendations', ivGlossT: 'What the terms mean',
+      inv: {
+        day: (a, p) => `Today: <b>${a}</b> (${p})`,
+        lineLab: 'In one line',
+        line: (v, c, p, y, m) => `The stocks are worth ${v} against ${c} paid for them, a ${p} gain. ${(y < 0) === (p.includes('+')) ? 'But over' : 'Over'} the last year the account is ${y < 0 ? 'down' : 'up'} ${aPct(y)}, and ${m < 0 ? 'down' : 'up'} ${aPct(m)} over the last month.`,
+        q: [['How much went in?', 'What was paid for the stocks held now.'], ['How much has it made?', p => `${p} on what was paid. A paper gain: it becomes real only when sold.`], ['How did the last year go?', (m, d) => `Over 12 months. Last month ${m}, today ${d}.`]],
+        range: { year: 'Year', month: 'Month' }, rangeAria: 'Chart range',
+        chartSub: { year: 'One point per month-end, last 12 months', month: 'Every trading day, last month' },
+        per: { '1D': 'Day', '7D': 'Week', '1M': 'Month', 'YTD': 'This year', '1Y': '12 months' },
+        tipChg: 'since start', chartAria: (a, b, c, d) => `Account value from ${a} (${c}) to ${b} (${d}).`, thDate: 'Date', thVal: 'Value',
+        ofAcct: 'of the account', vsPaid: 'on what was paid', paid: 'Paid', now: 'Worth now',
+        fine: (q, a, p, d) => `${q} shares · average buy price ${a} · price now ${p} · today ${d}`,
+        cash: v => `Plus cash in the account: ${v}`,
+        know: [[(k, p) => `${k} is ${p} of the account`, p => `One stock is ${p} of everything here, so the account moves mostly with it.`],
+          [p => `Two stocks are ${p}`, (a, b) => `${a} and ${b} together.`],
+          ['No loan', v => `No margin loan, so everything in the account is yours. Cash not invested: ${v}.`],
+          [v => `About ${v} in shekels`, fx => `At ${fx} shekels per dollar. The shekel value moves when the dollar does, too.`]],
+        gloss: [['Paper gain (unrealised)', "Today's value minus what was paid. It becomes a real gain, and capital-gains tax applies, only when the stock is sold."],
+          ['Average buy price', 'What one share cost on average, across every purchase of it.'],
+          ['Return for a period', 'How much the account rose or fell in that period, without deposits or withdrawals changing the number (IBKR\'s time-weighted method).'],
+          ['Concentration', 'How much of the account sits in one stock. The bigger that share, the more the account moves with that stock.']],
+        src: d => `IBKR connector, ${d}, read-only. The value is the account's net liquidation value; the chart is IBKR's account performance (time-weighted). For your own planning, not investment advice.`
+      }
     },
     he: {
       tickerAria: 'מספרים מרכזיים', brandAria: 'הכסף שלי, חזרה למעלה', menuAria: 'תפריט',
@@ -576,7 +721,7 @@ button.mini:hover, button.mini:focus-visible { background: #fff; }
       legal2: 'נתונים אינדיקטיביים לתכנון אישי. אינם דוח רשמי, אישור יתרה או ייעוץ השקעות.',
       asOfPill: d => `נכון ל-${d}`,
       tick: { net: 'שווי נקי', liquid: 'נזיל', pension: 'פנסיה', savings: 'השתלמות וגמל', fx: 'דולר/שקל', incoming: 'העסק ב-2026', incomingV: '₪70,000 התקבלו', next: 'הדדליין הבא', nextV: '31/12, תיאום מס', july: 'נטו ביולי', debts: 'הלוואות', p67: 'פנסיה בגיל 67', p67v: ' לחודש' },
-      menuMoneyItems: [['מזומן', 'עו״ש וחשבון דולרי'], ['השקעות', 'Interactive Israel וגמל להשקעה בהפניקס'], ['השתלמות וגמל', 'שבעה חשבונות בילין לפידות'], ['פנסיה', 'שתי קרנות במגדל'], ['חובות משפחה', 'אמא והאח'], ['עיקרי הדברים', 'המספרים שחשובים היום']],
+      menuMoneyItems: [['מזומן', 'עו״ש וחשבון דולרי'], ['השקעות', 'החשבון ב-Interactive Israel, במילים פשוטות'], ['השתלמות וגמל', 'שבעה חשבונות בילין לפידות'], ['פנסיה', 'שתי קרנות במגדל'], ['חובות משפחה', 'אמא והאח'], ['עיקרי הדברים', 'המספרים שחשובים היום']],
       menuTaxItems: [['העסק', 'ה-₪70,000 וכמה לשים בצד'], ['שנה אחרי שנה', 'הכנסות ומס, 2023 עד 2026'], ['משימות', 'דדליינים ושאלות פתוחות'], ['מקורות', 'מאיזה קובץ הגיע כל מספר']],
       logos: ['מגדל', 'ילין לפידות', 'הפניקס', 'Interactive Israel', 'Mixtiles', 'רשות המסים', 'ביטוח לאומי', 'בנק ישראל'],
       cards: {
@@ -588,7 +733,32 @@ button.mini:hover, button.mini:focus-visible { background: #fff; }
         inactive: [n => `${n} חשבונות לא פעילים`, v => `בילין לפידות, ואף אחד לא מפקיד אליהם. ${v} בפירוט האחרון, מיולי.`],
         debts: ['הלוואות', 'אין הלוואות. המס ל-2024 ול-2025 שולם.', 'לפי מיילי התשלום']
       },
-      foot: ['שווי נקי', 'נזיל', 'פנסיה', 'IBKR', 'הלוואות']
+      foot: ['שווי נקי', 'נזיל', 'פנסיה', 'IBKR', 'הלוואות'],
+      ivNav: 'השקעות', ivOpen: 'לעמוד ההשקעות', ivBack: 'חזרה לסקירה', ivEyebrow: 'Interactive Israel · תיק מניות', ivTitle: 'ההשקעות שלי.',
+      ivSub: 'עמוד אחד, במילים פשוטות: כמה החשבון שווה, כמה הושקע בו, ומה עושה כל מניה.',
+      ivWorth: 'החשבון שווה היום', ivChartT: 'איך השווי השתנה', ivMixT: 'מה יש בתיק', ivMixS: 'כל מניה, כמה היא שווה וכמה שולם עליה', ivKnowT: 'כדאי לדעת', ivKnowS: 'עובדות על התיק, לא המלצות', ivGlossT: 'מה המונחים אומרים',
+      inv: {
+        day: (a, p) => `היום: <b>${a}</b> (${p})`,
+        lineLab: 'בשורה אחת',
+        line: (v, c, p, y, m) => `המניות שוות היום ${v}, לעומת ${c} ששולמו עליהן: רווח של ${p}. ${(y < 0) === (p.includes('+')) ? 'אבל ' : ''}בשנה האחרונה החשבון ${y < 0 ? 'ירד' : 'עלה'} ב-${aPct(y)}, ובחודש האחרון ${m < 0 ? 'ירד' : 'עלה'} ב-${aPct(m)}.`,
+        q: [['כמה השקעתי?', 'מה ששולם על המניות שבתיק עכשיו.'], ['כמה הרווחתי?', p => `${p} על מה ששולם. זה רווח על הנייר: הוא נהיה אמיתי רק במכירה.`], ['איך הייתה השנה האחרונה?', (m, d) => `ב-12 החודשים האחרונים. בחודש האחרון ${m}, היום ${d}.`]],
+        range: { year: 'שנה', month: 'חודש' }, rangeAria: 'טווח הגרף',
+        chartSub: { year: 'נקודה לכל סוף חודש, 12 החודשים האחרונים', month: 'כל יום מסחר בחודש האחרון' },
+        per: { '1D': 'יום', '7D': 'שבוע', '1M': 'חודש', 'YTD': 'מתחילת השנה', '1Y': '12 חודשים' },
+        tipChg: 'מתחילת הטווח', chartAria: (a, b, c, d) => `שווי החשבון מ-${a} (${c}) עד ${b} (${d}).`, thDate: 'תאריך', thVal: 'שווי',
+        ofAcct: 'מהתיק', vsPaid: 'על מה ששולם', paid: 'שולם', now: 'שווה היום',
+        fine: (q, a, p, d) => `${q} מניות · מחיר קנייה ממוצע ${a} · מחיר היום ${p} · היום ${d}`,
+        cash: v => `ועוד מזומן בחשבון: ${v}`,
+        know: [[(k, p) => `${k} הוא ${p} מהתיק`, p => `מניה אחת היא ${p} מכל מה שיש כאן, ולכן החשבון זז בעיקר יחד איתה.`],
+          [p => `שתי מניות הן ${p}`, (a, b) => `${a} ו${b} ביחד.`],
+          ['בלי הלוואה', v => `אין הלוואת מרג׳ין, כך שכל מה שבחשבון שלך. מזומן שלא הושקע: ${v}.`],
+          [v => `בשקלים בערך ${v}`, fx => `לפי ${fx} ₪ לדולר. השווי בשקלים זז גם כשהדולר זז.`]],
+        gloss: [['רווח על הנייר (לא ממומש)', 'השווי היום פחות מה ששולם. הוא נהיה רווח אמיתי, ואז חל עליו מס רווח הון, רק כשמוכרים.'],
+          ['מחיר קנייה ממוצע', 'כמה עלתה מניה אחת בממוצע, על פני כל הקניות שלה.'],
+          ['תשואה לתקופה', 'כמה החשבון עלה או ירד בתקופה, בלי שהפקדות או משיכות ישנו את המספר (השיטה של IBKR, משוקללת זמן).'],
+          ['ריכוזיות', 'כמה מהתיק יושב במניה אחת. ככל שהחלק גדול יותר, החשבון זז יותר יחד עם המניה הזו.']],
+        src: d => `מחבר IBKR, ${d}, קריאה בלבד. השווי הוא שווי החיסול של החשבון; הגרף לפי ביצועי החשבון ב-IBKR (משוקלל זמן). לתכנון אישי, לא ייעוץ השקעות.`
+      }
     }
   };
   const t = () => T[state.lang];
@@ -617,6 +787,9 @@ button.mini:hover, button.mini:focus-visible { background: #fff; }
   };
   const fmtDate = s => { if (!s) return ''; const d = new Date(s + 'T12:00:00'); return state.lang === 'he' ? d.toLocaleDateString('en-GB').replace(/\//g, '/') : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }); };
   const ibkr = D.holdings.find(h => h.id === 'ibkr');
+  // one fixed colour per stock, everywhere (checked with the dataviz palette validator against white)
+  const PC = { NVDA: '#7b54f5', AAPL: '#2ba1f2', TSLA: '#e85400', TTWO: '#1f8a70', MNDY: '#c7900a', Cash: 'var(--rule)' };
+  const pcol = tk => PC[tk] || 'var(--muted)';
   const nv = D.positions.find(p => p.ticker === 'NVDA');
   const res = D.business.reserve;
 
@@ -646,7 +819,7 @@ button.mini:hover, button.mini:focus-visible { background: #fff; }
 
   const paintMenus = () => {
     const mk = (id, items, hrefs, colors) => { $(id).innerHTML = items.map(([a, b], i) => `<a class="mitem" href="${hrefs[i]}" style="--i:${i};--c:${colors[i]}"><span class="ic"><i></i></span><span class="t">${esc(a)}</span><span class="b">${esc(b)}</span></a>`).join(''); };
-    mk('m-money', t().menuMoneyItems, ['#holdings', '#holdings', '#holdings', '#holdings', '#holdings', '#highlights'], [GC.cash, GC.invest, GC.savings, GC.pension, GC.family, 'var(--orange)']);
+    mk('m-money', t().menuMoneyItems, ['#holdings', '#ibkr', '#holdings', '#holdings', '#holdings', '#highlights'], [GC.cash, GC.invest, GC.savings, GC.pension, GC.family, 'var(--orange)']);
     mk('m-tax', t().menuTaxItems, ['#business', '#years', '#todo', '#sources'], ['var(--orange)', 'var(--ink)', 'var(--purple)', 'var(--blue)']);
     const lg = t().logos.map(n => `<span class="logo"><span class="wm">${esc(n)}</span></span>`).join('');
     $('logos').innerHTML = lg + lg;
@@ -694,14 +867,13 @@ button.mini:hover, button.mini:focus-visible { background: #fff; }
   };
   const paintGrid = animate => {
     const list = D.holdings.filter(h => state.filter === 'all' || h.group === state.filter).sort((a, b) => b.ils - a.ils);
-    const pc = ['var(--purple)', 'var(--blue)', 'var(--yellow)', 'var(--orange)', 'var(--ink)', 'var(--rule)'];
     $('grid').innerHTML = list.map((h, i) => {
       const alt = h.usdOnly ? iso('$' + h.usd.toLocaleString('en-US', { minimumFractionDigits: 2 })) : other(h.ils);
-      const stack = h.id === 'ibkr' ? `<span class="stack">${D.positions.map((p, j) => `<i style="flex:${p.usd};background:${pc[j]}" title="${p.ticker} $${nf.format(p.usd)}"></i>`).join('')}</span>` : '';
+      const stack = h.id === 'ibkr' ? `<span class="stack">${D.positions.map(p => `<i style="flex:${p.usd};background:${pcol(p.ticker)}" title="${p.ticker} $${nf.format(p.usd)}"></i>`).join('')}</span>` : '';
       const right = h.ret12 ? `<span class="up">${iso('+' + h.ret12.toFixed(2) + '%')} <span>${esc(t().ret)}</span></span>` : (stack || `<span>${esc(L(h.source))}</span>`);
       return `<article class="pcard${animate ? ' hopin' : ''}" style="--i:${i}">
         <div class="well hp-squircle">${donut(h.ils / assets, GC[h.group])}<span class="tag ${LIQC[h.liquidity]}">${esc(t().liq[h.liquidity])}</span>${h.flag ? `<span class="off">${esc(t().inactive)}</span>` : ''}<span class="basis">${esc(t().basis[h.basis])}</span></div>
-        <div class="pmeta"><span class="pstore">${esc(L(h.institution))}</span><h3 class="pname">${esc(L(h.name))}</h3><p class="pvar">${esc(L(h.detail))}</p></div>
+        <div class="pmeta"><span class="pstore">${esc(L(h.institution))}</span><h3 class="pname">${esc(L(h.name))}</h3><p class="pvar">${esc(L(h.detail))}</p>${h.id === 'ibkr' ? `<a class="ivlink" href="#ibkr">${esc(t().ivOpen)}</a>` : ''}</div>
         <div class="prices"><span class="price">${money(h.ils)}</span><span class="was">${alt}</span></div>
         <p class="pnote">${esc(L(h.note))}</p>
         <div class="pfoot"><span>${h.asOf ? esc(t().asOf + (state.lang === 'he' ? '' : ' ') + fmtDate(h.asOf)) : esc(t().noDate)}</span>${right}</div>
@@ -781,6 +953,131 @@ button.mini:hover, button.mini:focus-visible { background: #fff; }
     $('legal1').textContent = t().legal1(fmtDate(D.asOf), FX, fmtDate(D.fx.date));
   };
 
+  // ---------- investments page ----------
+  const PF = D.ibkrPerf;
+  const stocks = D.positions.filter(p => p.ticker !== 'Cash').sort((a, b) => b.usd - a.usd);
+  const cashPos = D.positions.find(p => p.ticker === 'Cash') || { usd: 0 };
+  const posTot = D.positionsTotalUsd;
+  const cost = stocks.reduce((a, p) => a + p.costUsd, 0);
+  const mkt = stocks.reduce((a, p) => a + p.usd, 0);
+  const gain = stocks.reduce((a, p) => a + p.unrealizedUsd, 0);
+  const dayUsd = stocks.reduce((a, p) => a + (p.dayUsd || 0), 0);
+  const sUsd = v => iso((v >= 0 ? '+' : '−') + '$' + nf.format(Math.abs(Math.round(v))));
+  const sPct = (v, dp = 1) => iso((v >= 0 ? '+' : '−') + Math.abs(v * 100).toFixed(dp) + '%');
+  const aPct = v => iso(Math.abs(v * 100).toFixed(1) + '%');
+  const share = v => iso((v < .01 ? (v * 100).toFixed(1) : Math.round(v * 100)) + '%');
+  const usd2 = v => iso('$' + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+  const arrow = v => `<span aria-hidden="true">${v >= 0 ? '▲' : '▼'}</span>`;
+  const sg = v => v >= 0 ? 'sg-up' : 'sg-down';
+  const dLoc = (s, o) => new Date(s + 'T12:00:00').toLocaleDateString(state.lang === 'he' ? 'he-IL' : 'en-GB', o);
+  const niceStep = r => { const p = Math.pow(10, Math.floor(Math.log10(r))), m = r / p; return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10) * p; };
+  state.ivRange = 'year';
+
+  const paintChart = () => {
+    const box = $('ivChart');
+    if ($('invest').hidden || !box.clientWidth) return;
+    const x0 = t().inv, pts = PF[state.ivRange].map(([d, v]) => ({ d, v })), n = pts.length;
+    const W = Math.max(280, box.clientWidth - 16), H = W < 560 ? 230 : 300, pl = 50, pr = 18, pt = 28, pb = 30;
+    const vs = pts.map(p => p.v), step = niceStep((Math.max(...vs) - Math.min(...vs)) / 3 || 1000);
+    const lo = Math.floor(Math.min(...vs) / step) * step, hi = Math.ceil(Math.max(...vs) / step) * step;
+    const X = i => pl + i / (n - 1) * (W - pl - pr), Y = v => pt + (1 - (v - lo) / (hi - lo)) * (H - pt - pb);
+    const ax = { year: { month: 'short', year: 'numeric' }, month: { day: 'numeric', month: 'short' } }[state.ivRange];
+    let grid = '';
+    for (let v = lo; v <= hi + 1e-6; v += step) grid += `<line class="gl" x1="${pl}" x2="${W - pr}" y1="${Y(v)}" y2="${Y(v)}"/><text class="ax" x="${pl - 8}" y="${Y(v) + 4}" text-anchor="end">$${(v / 1000).toFixed(step % 1000 ? 1 : 0)}K</text>`;
+    const xl = [0, Math.round((n - 1) / 2), n - 1].map((i, j) => `<text class="ax" x="${X(i)}" y="${H - 8}" text-anchor="${['start', 'middle', 'end'][j]}">${esc(dLoc(pts[i].d, ax))}</text>`).join('');
+    const line = pts.map((p, i) => `${i ? 'L' : 'M'}${X(i).toFixed(1)},${Y(p.v).toFixed(1)}`).join('');
+    const area = `${line}L${X(n - 1).toFixed(1)},${H - pb}L${X(0).toFixed(1)},${H - pb}Z`;
+    const last = pts[n - 1], full = { day: 'numeric', month: 'long', year: 'numeric' };
+    box.innerHTML = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" tabindex="0" aria-label="${esc(x0.chartAria(dLoc(pts[0].d, full), dLoc(last.d, full), '$' + nf.format(pts[0].v), '$' + nf.format(last.v)))}">
+      <defs><linearGradient id="ivg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7b54f5" stop-opacity=".16"/><stop offset="1" stop-color="#7b54f5" stop-opacity="0"/></linearGradient></defs>
+      ${grid}${xl}<path d="${area}" fill="url(#ivg)"/><path class="ln" d="${line}"/>
+      <circle class="dot" cx="${X(n - 1)}" cy="${Y(last.v)}" r="4.5"/><text class="endl" x="${X(n - 1) - 10}" y="${pts[n - 2].v > last.v ? Y(last.v) + 4 : Y(last.v) - 12}" text-anchor="end">$${nf.format(last.v)}</text>
+      <g id="ivHov" visibility="hidden"><line class="cross" y1="${pt - 8}" y2="${H - pb}"/><circle class="dot" r="5"/></g>
+      <rect x="${pl}" y="0" width="${W - pl - pr}" height="${H}" fill="transparent"/></svg>
+      <div class="ivtip" id="ivTip"></div>
+      <table class="sr"><tr><th>${esc(x0.thDate)}</th><th>${esc(x0.thVal)}</th></tr>${pts.map(p => `<tr><td>${esc(dLoc(p.d, full))}</td><td>$${nf.format(p.v)}</td></tr>`).join('')}</table>`;
+    const svg = box.querySelector('svg'), hov = $('ivHov'), tip = $('ivTip');
+    const show = i => {
+      i = Math.max(0, Math.min(n - 1, i)); svg.dataset.i = i;
+      const p = pts[i], sr = svg.getBoundingClientRect(), k = sr.width / W;
+      hov.setAttribute('visibility', 'visible');
+      hov.querySelector('line').setAttribute('x1', X(i)); hov.querySelector('line').setAttribute('x2', X(i));
+      hov.querySelector('circle').setAttribute('cx', X(i)); hov.querySelector('circle').setAttribute('cy', Y(p.v));
+      tip.innerHTML = `${esc(dLoc(p.d, full))}<b>$${nf.format(Math.round(p.v))}</b>${i ? `${sPct(p.v / pts[0].v - 1)} ${esc(x0.tipChg)}` : ''}`;
+      tip.dataset.on = '';
+      const px = sr.left - box.getBoundingClientRect().left + X(i) * k, tw = tip.offsetWidth;
+      tip.style.left = Math.max(4, Math.min(box.clientWidth - tw - 4, px - tw / 2)) + 'px';
+    };
+    const hide = () => { hov.setAttribute('visibility', 'hidden'); delete tip.dataset.on; };
+    svg.addEventListener('pointermove', e => { const r = svg.getBoundingClientRect(), px = (e.clientX - r.left) * W / r.width; show(Math.round((px - pl) / (W - pl - pr) * (n - 1))); });
+    svg.addEventListener('pointerleave', hide); svg.addEventListener('blur', hide);
+    svg.addEventListener('keydown', e => { if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return; e.preventDefault(); const i = svg.dataset.i == null ? n - 1 : +svg.dataset.i; show(i + (e.key === 'ArrowRight' ? 1 : -1)); });
+  };
+
+  const paintInvest = () => {
+    const x = t().inv, R = PF.returns;
+    $('ivAmt').innerHTML = usd(ibkr.usd);
+    $('ivAlt').textContent = `${t().about} ${ils(ibkr.ils)} · ${t().asOf}${state.lang === 'he' ? '' : ' '}${fmtDate(ibkr.asOf)}`;
+    $('ivDay').innerHTML = x.day(`<span class="${sg(dayUsd)}">${arrow(dayUsd)} ${sUsd(dayUsd)}</span>`, sPct(R['1D']));
+    $('ivLine').innerHTML = `<small>${esc(x.lineLab)}</small>${esc(x.line(usd(mkt), usd(cost), sPct(gain / cost, 0), R['1Y'], R['1M']))}`;
+    const q = x.q;
+    $('ivQs').innerHTML = [
+      [q[0][0], usd(cost), q[0][1]],
+      [q[1][0], `<span class="${sg(gain)}">${sUsd(gain)}</span>`, q[1][1](sPct(gain / cost, 0))],
+      [q[2][0], `<span class="${sg(R['1Y'])}">${sPct(R['1Y'])}</span>`, q[2][1](sPct(R['1M']), sPct(R['1D']))]
+    ].map(([a, b, c]) => `<article class="ivq hp-squircle"><span class="qq">${esc(a)}</span><span class="price">${b}</span><p class="pnote">${esc(c)}</p></article>`).join('');
+    $('ivTog').setAttribute('aria-label', x.rangeAria);
+    $('ivTog').innerHTML = ['year', 'month'].map(k => `<button class="mini hp-squircle" type="button" data-r="${k}" aria-pressed="${state.ivRange === k}">${esc(x.range[k])}</button>`).join('');
+    $('ivChartSub').textContent = x.chartSub[state.ivRange];
+    $('ivPeriods').innerHTML = ['1D', '7D', '1M', 'YTD', '1Y'].map(k => `<span class="ivper hp-squircle">${esc(x.per[k])} <b><span class="${sg(R[k])}">${arrow(R[k])}</span> ${sPct(R[k])}</b></span>`).join('');
+    paintChart();
+    $('ivBar').innerHTML = D.positions.map(p => `<i style="flex:${p.usd};--c:${pcol(p.ticker)}" title="${esc(p.ticker === 'Cash' ? L(p.name) : p.ticker)} ${share(p.usd / posTot)}"></i>`).join('');
+    $('ivLeg').innerHTML = D.positions.map(p => `<span><i style="background:${pcol(p.ticker)}"></i>${esc(p.ticker === 'Cash' ? L(p.name) : p.ticker)} <b>${share(p.usd / posTot)}</b></span>`).join('');
+    $('ivRows').innerHTML = stocks.map(p => {
+      const mx = Math.max(p.costUsd, p.usd), g = p.unrealizedUsd;
+      return `<article class="ivrow hp-squircle" style="--c:${pcol(p.ticker)}">
+        <div class="ivid"><span class="ivtk hp-squircle">${esc(p.ticker)}</span><div class="pmeta"><h3 class="pname">${esc(L(p.name))}</h3><p class="pvar">${esc(L(p.what))}</p></div></div>
+        <div class="ivval"><span class="price">${usd(p.usd)}</span><span class="was">${share(p.usd / posTot)} ${esc(x.ofAcct)}</span></div>
+        <div class="ivgain"><b class="${sg(g)}">${arrow(g)} ${sUsd(g)}</b><span>${sPct(g / p.costUsd, 0)} ${esc(x.vsPaid)}</span></div>
+        <div class="ivcmp"><div class="ivm"><span>${esc(x.paid)}</span><span class="tr"><i style="width:${p.costUsd / mx * 100}%"></i></span><b>${usd(p.costUsd)}</b></div><div class="ivm now"><span>${esc(x.now)}</span><span class="tr"><i style="width:${p.usd / mx * 100}%"></i></span><b>${usd(p.usd)}</b></div></div>
+        <p class="ivfine">${esc(x.fine(p.qty, usd2(p.avgCost), usd2(p.price), sUsd(p.dayUsd)))}</p>
+      </article>`;
+    }).join('');
+    $('ivCash').textContent = x.cash(usd2(cashPos.usd));
+    const k = x.know, top = stocks[0], two = stocks[0].usd + stocks[1].usd;
+    $('ivKnow').innerHTML = [
+      ['yellow', k[0][0](top.ticker, share(top.usd / posTot)), k[0][1](share(top.usd / posTot))],
+      ['blue', k[1][0](share(two / posTot)), k[1][1](L(stocks[0].name), L(stocks[1].name))],
+      ['purple', k[2][0], k[2][1](usd2(cashPos.usd))],
+      ['white', k[3][0](ils(ibkr.ils)), k[3][1](FX)]
+    ].map(([c, a, b]) => `<span class="note hp-squircle ${c}">${esc(a)}<small>${esc(b)}</small></span>`).join('');
+    $('ivGloss').innerHTML = x.gloss.map(([a, b]) => `<div><dt>${esc(a)}</dt><dd>${esc(b)}</dd></div>`).join('');
+    $('ivSrc').textContent = x.src(fmtDate(PF.asOf));
+  };
+  $('ivTog').addEventListener('click', e => { const b = e.target.closest('[data-r]'); if (!b || b.dataset.r === state.ivRange) return; state.ivRange = b.dataset.r; paintInvest(); });
+  let rz = 0; addEventListener('resize', () => { cancelAnimationFrame(rz); rz = requestAnimationFrame(paintChart); });
+
+  // ---------- pages: overview and #ibkr ----------
+  let page = null;
+  const showPage = pg => {
+    const inv = pg === 'invest';
+    $('home').hidden = inv; $('invest').hidden = !inv;
+    document.querySelectorAll('[data-nav-inv]').forEach(a => inv ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current'));
+    page = pg;
+    if (inv) paintInvest();
+  };
+  document.addEventListener('click', e => {
+    const a = e.target.closest('a[href^="#"]'); if (!a) return;
+    const id = a.getAttribute('href').slice(1), pg = id === 'ibkr' ? 'invest' : 'home';
+    if (pg === 'home' && page === 'home') return;   // normal in-page anchor
+    e.preventDefault();
+    showPage(pg);
+    try { history.pushState(null, '', '#' + id); } catch (er) {}
+    const el = pg === 'home' && id !== 'top' ? document.getElementById(id) : null;
+    el ? el.scrollIntoView() : scrollTo(0, 0);
+  });
+  addEventListener('popstate', () => showPage(location.hash === '#ibkr' ? 'invest' : 'home'));
+
   // ---------- chrome ----------
   const groups = [...document.querySelectorAll('.group')];
   const closeAll = except => groups.forEach(g => { if (g === except) return; g.querySelector('.pill-group').setAttribute('aria-expanded', 'false'); g.querySelector('.panel').removeAttribute('data-open'); });
@@ -798,13 +1095,14 @@ button.mini:hover, button.mini:focus-visible { background: #fff; }
   addEventListener('scroll', onScroll, { passive: true }); onScroll();
   (() => { let s = ''; const S = 72, gap = 8; for (let y = 0; y < 660; y += S + gap) for (let x = 0; x < 1440; x += S + gap) s += `<rect class="tile" x="${x}" y="${y}" width="${S}" height="${S}" rx="14"/>`; $('floor').innerHTML = s; })();
 
-  const paintAll = animate => { paintStatic(); paintTicker(); paintMenus(); paintTotal(); paintCards(); paintFilters(); paintGrid(animate); paintBiz(); paintYear(0); paintTodo(); paintFoot(); };
+  const paintAll = animate => { paintStatic(); paintTicker(); paintMenus(); paintTotal(); paintCards(); paintFilters(); paintGrid(animate); paintBiz(); paintYear(0); paintTodo(); paintFoot(); if (page === 'invest') paintInvest(); };
   const setCur = c => { state.cur = c; store.set('mf-cur', c); paintTotal(); paintCards(); paintFilters(); paintGrid(false); paintBiz(); };
   $('curBtn').addEventListener('click', () => setCur(state.cur === 'USD' ? 'ILS' : 'USD'));
   $('amtBtn').addEventListener('click', () => setCur(state.cur === 'USD' ? 'ILS' : 'USD'));
   $('lang').addEventListener('click', e => { const b = e.target.closest('[data-set-lang]'); if (!b || b.dataset.setLang === state.lang) return; state.lang = b.dataset.setLang; store.set('mf-lang', state.lang); $('wmsg').textContent = ''; paintAll(false); });
 
   paintAll(true);
+  showPage(location.hash === '#ibkr' ? 'invest' : 'home');
 })();
 </script>
 
